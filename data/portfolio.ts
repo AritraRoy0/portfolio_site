@@ -135,6 +135,7 @@ export const portfolio: Portfolio = {
         "Built and launched a peer-to-peer lending platform with user profiles, authentication, dashboards, NoSQL transactions, and Stripe payments.",
       highlights: ["Grew to 300+ monthly active users, measured with Vercel and Google Cloud analytics."],
       tags: ["TypeScript", "Next.js", "Stripe", "NoSQL", "Vercel"],
+      image: "/projects/vault.png",
       demo: "https://gofundyourselfinc.com/",
       code: "https://github.com/AritraRoy0/GFY",
     },
@@ -151,6 +152,20 @@ export const portfolio: Portfolio = {
       image: "/projects/streetlevel.png",
       demo: "https://streetlevel-peach.vercel.app",
       code: "https://github.com/AritraRoy0/StreetLevel",
+    },
+    {
+      title: "Watchlist",
+      subtitle: "Movie & TV show tracker",
+      description:
+        "A full-stack app for tracking what to watch across streaming platforms, with user accounts, watch status, and filtering by status and media type.",
+      highlights: [
+        "Express REST API on MySQL with create, update, delete, and filter endpoints, each scoped to the signed-in user's own items.",
+        "JWT authentication with bcrypt password hashing.",
+      ],
+      tags: ["Next.js", "TypeScript", "Express.js", "MySQL", "JWT"],
+      image: "/projects/watchlist.png",
+      demo: "https://watchlist-ruddy-one.vercel.app",
+      code: "https://github.com/AritraRoy0/watchlist",
     },
   ],
 
