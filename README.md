@@ -9,7 +9,7 @@ All content lives in **`data/portfolio.ts`**. The main fields:
 
 | Field | What it controls |
 |---|---|
-| `name`, `role`, `location`, `timezone` | Hero, nav, footer, live local time |
+| `name`, `role`, `timezone` | Hero, nav, footer, live local time |
 | `availability` | Status with a green dot at the top of the page (`""` hides it) |
 | `focus` | Rotating phrases in the hero ("…building *fintech platforms*") |
 | `marquee` | Words in the big scrolling banner under the hero |

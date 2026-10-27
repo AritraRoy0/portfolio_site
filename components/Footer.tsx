@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { portfolio } from "@/data/portfolio";
 import { REDUCED_MOTION, useLocalTime, useMediaQuery } from "@/lib/hooks";
-import { useSite } from "./Providers";
+import { useScrollControls } from "./Providers";
 import { Magnetic } from "./ui/Magnetic";
 import { RollingText } from "./ui/RollingText";
 
@@ -84,7 +84,7 @@ function EmailActions({ email }: { email: string }) {
 export function Footer() {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useMediaQuery(REDUCED_MOTION);
-  const { scrollTo } = useSite();
+  const { scrollTo } = useScrollControls();
   const time = useLocalTime(portfolio.timezone);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end end"] });
   // Content starts lower and rises into place, a little slower than the page scrolls.
@@ -113,17 +113,8 @@ export function Footer() {
                 Contact
               </p>
               <p className="text-right">
-                {portfolio.location}
-                <span className="mt-1 block whitespace-nowrap opacity-80">
-                  {time ? (
-                    <>
-                      <span className="hidden sm:inline">Local time </span>
-                      {time}
-                    </>
-                  ) : (
-                    " "
-                  )}
-                </span>
+                Local time
+                <span className="mt-1 block whitespace-nowrap opacity-80">{time ?? " "}</span>
               </p>
             </div>
 

@@ -53,7 +53,6 @@ export interface Stat {
 export interface Portfolio {
   name: string;
   role: string;
-  location: string;
   /** IANA time zone for the live local-time display, e.g. "America/New_York". */
   timezone?: string;
   /** Status shown with a green dot at the top of the page. Leave "" to hide. */
@@ -86,7 +85,6 @@ export interface Portfolio {
 export const portfolio: Portfolio = {
   name: "Roy Mazumder",
   role: "Full-Stack Software Engineer",
-  location: "Stoneham, MA",
   timezone: "America/New_York",
   availability: "Open to new opportunities",
   tagline:
@@ -174,7 +172,7 @@ export const portfolio: Portfolio = {
       role: "Vice President",
       company: "Debate Club",
       points: [
-        "Trained and mentored new members of the 10-member club in debate and public speaking.",
+        "Trained and mentored new members of the club in debate and public speaking.",
         "Organized club events and managed the club treasury and event logistics.",
       ],
     },

@@ -6,16 +6,21 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 type ScrollTarget = string | number | HTMLElement;
 
-interface SiteContextValue {
+interface ScrollControls {
   /** Smooth-scroll instance. Null for reduced-motion visitors, who get native scrolling. */
   lenis: Lenis | null;
-  /** True once the intro curtain starts lifting, so the hero can animate in. */
-  introDone: boolean;
-  finishIntro: () => void;
   scrollTo: (target: ScrollTarget, options?: { offset?: number; immediate?: boolean }) => void;
 }
 
-const SiteContext = createContext<SiteContextValue | null>(null);
+interface IntroState {
+  /** True once the intro curtain starts lifting, so the hero can animate in. */
+  introDone: boolean;
+  finishIntro: () => void;
+}
+
+// Two contexts, so finishing the intro only re-renders the components that animate on it.
+const ScrollContext = createContext<ScrollControls | null>(null);
+const IntroContext = createContext<IntroState | null>(null);
 
 const easeInOutExpo = (t: number) =>
   t === 0
@@ -42,7 +47,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   const finishIntro = useCallback(() => setIntroDone(true), []);
 
-  const scrollTo = useCallback<SiteContextValue["scrollTo"]>(
+  const scrollTo = useCallback<ScrollControls["scrollTo"]>(
     (target, options) => {
       const offset = options?.offset ?? 0;
       if (lenis) {
@@ -70,20 +75,26 @@ export function Providers({ children }: { children: React.ReactNode }) {
     [lenis],
   );
 
-  const value = useMemo(
-    () => ({ lenis, introDone, finishIntro, scrollTo }),
-    [lenis, introDone, finishIntro, scrollTo],
-  );
+  const scrollValue = useMemo(() => ({ lenis, scrollTo }), [lenis, scrollTo]);
+  const introValue = useMemo(() => ({ introDone, finishIntro }), [introDone, finishIntro]);
 
   return (
-    <SiteContext.Provider value={value}>
-      <MotionConfig reducedMotion="user">{children}</MotionConfig>
-    </SiteContext.Provider>
+    <ScrollContext.Provider value={scrollValue}>
+      <IntroContext.Provider value={introValue}>
+        <MotionConfig reducedMotion="user">{children}</MotionConfig>
+      </IntroContext.Provider>
+    </ScrollContext.Provider>
   );
 }
 
-export function useSite() {
-  const context = useContext(SiteContext);
-  if (!context) throw new Error("useSite must be used inside <Providers>");
+export function useScrollControls() {
+  const context = useContext(ScrollContext);
+  if (!context) throw new Error("useScrollControls must be used inside <Providers>");
+  return context;
+}
+
+export function useIntro() {
+  const context = useContext(IntroContext);
+  if (!context) throw new Error("useIntro must be used inside <Providers>");
   return context;
 }

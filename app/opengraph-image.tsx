@@ -26,7 +26,7 @@ export default function OpengraphImage() {
       >
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 22, letterSpacing: 4, color: "#8d8d92" }}>
           <span>PORTFOLIO</span>
-          <span>{portfolio.location.toUpperCase()}</span>
+          <span>{new Date().getFullYear()}</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", fontSize: 168, fontWeight: 700, letterSpacing: -8, lineHeight: 0.9 }}>
           <span>{first}</span>

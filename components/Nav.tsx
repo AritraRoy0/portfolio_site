@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type MouseEvent, type RefObject } from "re
 import { portfolio, type SocialKey } from "@/data/portfolio";
 import { cn, EASE_IN_OUT, EASE_OUT, pad2 } from "@/lib/utils";
 import { socialIcons, socialLabels } from "./Icons";
-import { useSite } from "./Providers";
+import { useIntro, useScrollControls } from "./Providers";
 import { ThemeToggle } from "./ThemeToggle";
 import { btn } from "./ui/buttons";
 import { RollingText } from "./ui/RollingText";
@@ -31,7 +31,8 @@ const initials = portfolio.name
   .toUpperCase();
 
 export function Nav() {
-  const { scrollTo, lenis, introDone } = useSite();
+  const { scrollTo, lenis } = useScrollControls();
+  const { introDone } = useIntro();
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [active, setActive] = useState<string | null>(null);

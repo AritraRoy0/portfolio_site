@@ -4,7 +4,7 @@ import { AnimatePresence, animate, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { portfolio } from "@/data/portfolio";
 import { EASE_IN_OUT, EASE_OUT } from "@/lib/utils";
-import { useSite } from "./Providers";
+import { useIntro, useScrollControls } from "./Providers";
 
 // The curtain's bottom edge bows downward as it lifts, then flattens out.
 const CURVED = "M0 0 L100 0 Q50 100 0 0 Z";
@@ -15,7 +15,8 @@ const FLAT = "M0 0 L100 0 Q50 0 0 0 Z";
  * reduced-motion visitors skip it (see the boot script in layout.tsx).
  */
 export function Preloader() {
-  const { finishIntro, lenis } = useSite();
+  const { finishIntro } = useIntro();
+  const { lenis } = useScrollControls();
   const [visible, setVisible] = useState(true);
   const counter = useRef<HTMLSpanElement>(null);
 
@@ -26,7 +27,7 @@ export function Preloader() {
       return;
     }
     const controls = animate(0, 100, {
-      duration: 1.9,
+      duration: 1.6,
       ease: [0.7, 0, 0.3, 1],
       onUpdate: (value) => {
         if (counter.current) counter.current.textContent = String(Math.round(value)).padStart(3, "0");

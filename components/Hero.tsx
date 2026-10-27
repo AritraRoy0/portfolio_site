@@ -7,7 +7,7 @@ import { portfolio } from "@/data/portfolio";
 import { REDUCED_MOTION, useLocalTime, useMediaQuery } from "@/lib/hooks";
 import { EASE_OUT } from "@/lib/utils";
 import { DotField } from "./DotField";
-import { useSite } from "./Providers";
+import { useIntro, useScrollControls } from "./Providers";
 import { RotatingWords } from "./RotatingWords";
 import { btn } from "./ui/buttons";
 import { Magnetic } from "./ui/Magnetic";
@@ -19,7 +19,8 @@ import { RollingText } from "./ui/RollingText";
  * like a curtain; on the way, the name drifts apart and the hero recedes.
  */
 export function Hero() {
-  const { introDone, scrollTo } = useSite();
+  const { introDone } = useIntro();
+  const { scrollTo } = useScrollControls();
   const reduced = useMediaQuery(REDUCED_MOTION);
   const time = useLocalTime(portfolio.timezone);
   const viewport = useRef(800);
@@ -63,7 +64,10 @@ export function Hero() {
         transition={{ duration: 1.8, ease: "easeOut", delay: 0.2 }}
       >
         <div className="hero-glow absolute -right-[18%] -top-[35%] size-[80vmax] rounded-full" />
-        <DotField className="absolute inset-0 size-full [mask-image:radial-gradient(ellipse_80%_75%_at_65%_35%,#000_30%,transparent_80%)]" />
+        <DotField
+          active={introDone}
+          className="absolute inset-0 size-full [mask-image:radial-gradient(ellipse_80%_75%_at_65%_35%,#000_30%,transparent_80%)]"
+        />
       </motion.div>
 
       <motion.div
@@ -83,7 +87,7 @@ export function Hero() {
             <span />
           )}
           <motion.p data-reveal {...appear(0.65)} className="hidden whitespace-nowrap text-right sm:block">
-            {portfolio.location}
+            Local time
             <span className="mt-1 block">{time ?? " "}</span>
           </motion.p>
         </div>

@@ -183,10 +183,11 @@
 }
 
 /* ---------- Hero ---------- */
+/* The gradient is already soft, so no blur filter: the drift stays a cheap compositor-only animation. */
 .hero-glow {
-  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.55), transparent);
+  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.55), rgb(var(--accent-rgb) / 0.12) 60%, transparent);
   opacity: var(--glow-opacity);
-  filter: blur(30px);
+  will-change: transform;
   animation: glow-drift 16s ease-in-out infinite alternate;
 }
 

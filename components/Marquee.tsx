@@ -4,6 +4,7 @@ import { Asterisk } from "lucide-react";
 import {
   motion,
   useAnimationFrame,
+  useInView,
   useMotionValue,
   useReducedMotion,
   useScroll,
@@ -24,6 +25,8 @@ const wrap = (min: number, max: number, value: number) => {
  */
 export function Marquee({ items, baseVelocity = -3 }: { items: string[]; baseVelocity?: number }) {
   const reduced = useReducedMotion();
+  const strip = useRef<HTMLDivElement>(null);
+  const inView = useInView(strip, { margin: "200px 0px" });
   const baseX = useMotionValue(0);
   const { scrollY } = useScroll();
   const velocity = useVelocity(scrollY);
@@ -34,7 +37,7 @@ export function Marquee({ items, baseVelocity = -3 }: { items: string[]; baseVel
   const direction = useRef(1);
 
   useAnimationFrame((_, delta) => {
-    if (reduced) return;
+    if (reduced || !inView) return;
     let moveBy = direction.current * baseVelocity * (delta / 1000);
     const factor = velocityFactor.get();
     if (factor < 0) direction.current = -1;
@@ -60,7 +63,7 @@ export function Marquee({ items, baseVelocity = -3 }: { items: string[]; baseVel
   );
 
   return (
-    <div aria-hidden className="select-none overflow-hidden border-y border-line py-5 md:py-7">
+    <div ref={strip} aria-hidden className="select-none overflow-hidden border-y border-line py-5 md:py-7">
       <motion.div
         style={{ x }}
         className="flex w-max whitespace-nowrap text-[clamp(2.75rem,8vw,7.5rem)] font-semibold leading-[1.05] tracking-[-0.045em]"
