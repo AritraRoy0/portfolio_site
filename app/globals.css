@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * `dark:` applies when the user picked dark mode with the toggle,
+ * `dark:` applies when the visitor picked dark mode with the toggle,
  * or when their system is dark and they haven't picked light.
  */
 @custom-variant dark {
@@ -15,80 +15,124 @@
   }
 }
 
+/* Screens big enough for the stacked, pinned project cards. */
+@custom-variant stack (@media (min-width: 64rem) and (min-height: 45rem));
+/* Stacked cards on shorter laptop screens: tighter spacing so every card fits. */
+@custom-variant stack-short (@media (min-width: 64rem) and (min-height: 45rem) and (max-height: 52rem));
+
 /* ---------- Theme tokens ---------- */
 :root {
-  --bg: #fafaf9;
-  --surface: #ffffff;
-  --surface-2: #f2f2f0;
-  --text: #18181b;
-  --muted: #5b5b66;
-  --border: #e4e4e0;
-  --accent: #4f46e5;
-  --accent-contrast: #ffffff;
-  --accent-soft: #eef0ff;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px rgb(0 0 0 / 0.06);
+  --bg: #f3f1ec;
+  --surface: #fbfaf7;
+  --surface-2: #e9e6df;
+  --fg: #111110;
+  --fg-rgb: 17 17 16;
+  --muted: #5f5d58;
+  --line: rgb(17 17 16 / 0.12);
+  --accent: #ff5a24;
+  --accent-rgb: 255 90 36;
+  --accent-ink: #c2410c;
+  --accent-fg: #0b0b0c;
+  --glow-opacity: 0.55;
+  --grain-opacity: 0.05;
+  --dim-alpha: 0.3;
+  --curtain-radius: 1.75rem;
   color-scheme: light;
+}
+
+@media (width >= 48rem) {
+  :root {
+    --curtain-radius: 2.75rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e0e11;
-    --surface: #16161b;
-    --surface-2: #1e1e25;
-    --text: #ececf1;
-    --muted: #a1a1ad;
-    --border: #2a2a33;
-    --accent: #8b85ff;
-    --accent-contrast: #0e0e11;
-    --accent-soft: #1f1d3a;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.35);
+    --bg: #0b0b0c;
+    --surface: #121214;
+    --surface-2: #1a1a1d;
+    --fg: #ededea;
+    --fg-rgb: 237 237 234;
+    --muted: #8d8d92;
+    --line: rgb(237 237 234 / 0.1);
+    --accent: #ff6a3d;
+    --accent-rgb: 255 106 61;
+    --accent-ink: #ff7a50;
+    --accent-fg: #0b0b0c;
+    --glow-opacity: 0.4;
+    --grain-opacity: 0.06;
+    --dim-alpha: 0.85;
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #0e0e11;
-  --surface: #16161b;
-  --surface-2: #1e1e25;
-  --text: #ececf1;
-  --muted: #a1a1ad;
-  --border: #2a2a33;
-  --accent: #8b85ff;
-  --accent-contrast: #0e0e11;
-  --accent-soft: #1f1d3a;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.35);
+  --bg: #0b0b0c;
+  --surface: #121214;
+  --surface-2: #1a1a1d;
+  --fg: #ededea;
+  --fg-rgb: 237 237 234;
+  --muted: #8d8d92;
+  --line: rgb(237 237 234 / 0.1);
+  --accent: #ff6a3d;
+  --accent-rgb: 255 106 61;
+  --accent-ink: #ff7a50;
+  --accent-fg: #0b0b0c;
+  --glow-opacity: 0.4;
+  --grain-opacity: 0.06;
+  --dim-alpha: 0.85;
   color-scheme: dark;
 }
 
-/* Expose the tokens as Tailwind utilities: bg-bg, text-muted, border-line, ... */
+/* Tokens as Tailwind utilities: bg-bg, text-muted, border-line, text-accent-ink, ... */
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
-  --color-fg: var(--text);
+  --color-fg: var(--fg);
   --color-muted: var(--muted);
-  --color-line: var(--border);
+  --color-line: var(--line);
   --color-accent: var(--accent);
-  --color-accent-fg: var(--accent-contrast);
-  --color-accent-soft: var(--accent-soft);
-  --shadow-card: var(--shadow);
-  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-fg: var(--accent-fg);
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 @utility container-page {
   width: 100%;
-  max-width: 1040px;
+  max-width: 90rem;
   margin-inline: auto;
-  padding-inline: 16px;
+  padding-inline: 1.25rem;
   @media (width >= 48rem) {
-    padding-inline: 20px;
+    padding-inline: 2rem;
   }
+  @media (width >= 80rem) {
+    padding-inline: 3rem;
+  }
+}
+
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--fg);
 }
 
 @layer base {
   html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 80px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-fg);
   }
 
   :focus-visible {
@@ -97,14 +141,210 @@
     border-radius: 6px;
   }
 
+  /* Sections receive focus after in-page navigation; no ring needed there. */
+  [tabindex="-1"]:focus {
+    outline: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
     *,
     *::before,
     *::after {
-      transition: none !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
     }
   }
+}
+
+/* ---------- Intro ---------- */
+/* Repeat visits and reduced-motion visitors skip the intro (set before paint in layout.tsx). */
+[data-intro="skip"] .preloader {
+  display: none;
+}
+
+/* ---------- Custom cursor ---------- */
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor,
+  html.has-cursor * {
+    cursor: none !important;
+  }
+}
+
+/* ---------- Film grain ---------- */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* ---------- Hero ---------- */
+.hero-glow {
+  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.55), transparent);
+  opacity: var(--glow-opacity);
+  filter: blur(30px);
+  animation: glow-drift 16s ease-in-out infinite alternate;
+}
+
+@keyframes glow-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-8%, 10%, 0) scale(1.12);
+  }
+}
+
+.scroll-cue::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: -100%;
+  height: 100%;
+  background: var(--accent);
+  animation: scroll-cue 2.4s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+@keyframes scroll-cue {
+  0% {
+    top: -100%;
+  }
+  65%,
+  100% {
+    top: 100%;
+  }
+}
+
+/* ---------- Cards ---------- */
+.spotlight::before,
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.spotlight::before {
+  background: radial-gradient(
+    28rem circle at var(--mx, 50%) var(--my, 50%),
+    rgb(var(--accent-rgb) / 0.12),
+    transparent 45%
+  );
+}
+
+/* Glowing border that follows the cursor. */
+.spotlight::after {
+  padding: 1px;
+  background: radial-gradient(18rem circle at var(--mx, 50%) var(--my, 50%), var(--accent), transparent 45%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.spotlight:hover::before,
+.spotlight:hover::after {
+  opacity: 1;
+}
+
+.media-glow {
+  background:
+    radial-gradient(60% 75% at var(--glow-x, 60%) 0%, rgb(var(--accent-rgb) / 0.3), transparent 70%),
+    radial-gradient(50% 60% at calc(100% - var(--glow-x, 60%)) 100%, rgb(var(--fg-rgb) / 0.07), transparent 70%);
+}
+
+/* Reduced motion: project cards scroll normally instead of pinning and stacking. */
+@media (prefers-reduced-motion: reduce) {
+  .stack-slot {
+    position: static !important;
+    height: auto !important;
+  }
+  .stack-spacer + .stack-slot {
+    margin-top: 1.25rem;
+  }
+  .stack-spacer {
+    display: none !important;
+  }
+}
+
+/* ---------- Footer reveal ---------- */
+/*
+ * The footer sits fixed underneath the page and is uncovered as the last section
+ * scrolls away. The wrapper tucks under the page's rounded bottom corners so the
+ * footer colour shows through them.
+ */
+.footer-reveal {
+  position: relative;
+  height: calc(100svh + var(--curtain-radius));
+  margin-top: calc(-1 * var(--curtain-radius));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.footer-reveal-inner {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  height: 100svh;
+}
+
+/* Very short screens: plain footer so nothing gets cut off. */
+@media (max-height: 34.99rem) {
+  .footer-reveal {
+    height: auto;
+    margin-top: 0;
+    clip-path: none;
+  }
+  .footer-reveal-inner {
+    position: relative;
+    height: auto;
+  }
+}
+
+.footer-theme {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.footer-theme ::selection {
+  background: var(--accent-fg);
+  color: var(--accent);
+}
+
+.footer-theme :focus-visible {
+  outline-color: var(--accent-fg);
+}
+
+/* ---------- Skip link ---------- */
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 200;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: var(--fg);
+  color: var(--bg);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transform: translateY(-200%);
+  transition: transform 0.3s ease;
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* ---------- Theme switch (View Transitions API) ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }

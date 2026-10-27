@@ -4,6 +4,9 @@
  *  Everything on the site (name, links, resume, projects...)
  *  is read from the `portfolio` object below.
  *  Leave an optional field as "" (or remove it) to hide it.
+ *
+ *  Tip: in `statement` and section titles, wrap words in
+ *  *asterisks* to set them in the orange italic serif.
  * ============================================================
  */
 
@@ -21,9 +24,10 @@ export interface Project {
   title: string;
   subtitle?: string;
   description: string;
+  /** Keep to two short bullets so the card fits on laptop screens. */
   highlights?: string[];
   tags: string[];
-  /** Path to a screenshot in /public, e.g. "/projects/streetlevel.png" */
+  /** Path to a 16:9 screenshot in /public, e.g. "/projects/streetlevel.png" */
   image?: string;
   demo?: string;
   code?: string;
@@ -40,22 +44,42 @@ export interface SkillGroup {
   items: string[];
 }
 
+export interface Stat {
+  value: number;
+  suffix?: string;
+  label: string;
+}
+
 export interface Portfolio {
   name: string;
   role: string;
   location: string;
+  /** IANA time zone for the live local-time display, e.g. "America/New_York". */
+  timezone?: string;
+  /** Status shown with a green dot at the top of the page. Leave "" to hide. */
+  availability?: string;
   tagline: string;
+  /** Rotating phrases in the hero: "... building <phrase>". */
+  focus: string[];
+  /** Words in the big scrolling banner under the hero. */
+  marquee: string[];
+  /** Large About statement that lights up word by word as you scroll. */
+  statement: string;
   about: string[];
+  /** Big numbers in the About section. They count up when scrolled into view. */
+  stats: Stat[];
+  /** Short intros shown next to section titles. */
+  intros: { experience?: string; work?: string; toolkit?: string };
   /** Path to your resume PDF in /public, e.g. "/resume.pdf" */
   resume?: string;
   socials: Partial<Record<SocialKey, string>>;
   skills: SkillGroup[];
-  /** Most recent first. Leave empty to hide the Experience section. */
+  /** Most recent first. Roles at the same company are grouped together. */
   experience: Job[];
   /** Leave empty to hide the Leadership list. */
   leadership: Job[];
   projects: Project[];
-  /** Leave empty to hide the Education section. */
+  /** Leave empty to hide the Education card. */
   education: Education[];
 }
 
@@ -63,14 +87,43 @@ export const portfolio: Portfolio = {
   name: "Roy Mazumder",
   role: "Full-Stack Software Engineer",
   location: "Stoneham, MA",
+  timezone: "America/New_York",
+  availability: "Open to new opportunities",
   tagline:
     "I build full-stack web apps, cloud monitoring tools and automation, from a robot fleet dashboard spanning 4 continents to a fintech platform with 300+ monthly active users.",
 
+  focus: ["fintech platforms", "cloud dashboards", "analytics tools", "time-saving automation"],
+
+  marquee: [
+    "Full-stack engineering",
+    "Cloud infrastructure",
+    "Fintech",
+    "Automation",
+    "Data & analytics",
+    "UX design",
+  ],
+
+  statement:
+    "I’m a software engineer who likes owning a product *end to end*, from UX design and front-end code to APIs and cloud deployment.",
+
   about: [
-    "I'm a software engineer who likes owning a product end to end, from UX design and front-end code to APIs and cloud deployment.",
     "At Ava Robotics, a Robots-as-a-Service startup, I led development of the dashboard used to monitor and manage hundreds of robots and 32+ Robot Management Servers worldwide, and automated work that used to take the team hours every week.",
     "Outside work I build my own products. VAULT, a peer-to-peer lending platform, grew to 300+ monthly active users, and I'm currently building StreetLevel, a market research and analytics platform.",
   ],
+
+  stats: [
+    { value: 300, suffix: "+", label: "Monthly active users on VAULT" },
+    { value: 32, suffix: "+", label: "Robot Management Servers monitored" },
+    { value: 40, suffix: "K+", label: "Reports, events and logs automated each quarter" },
+    { value: 4, label: "Continents covered by the fleet dashboard" },
+  ],
+
+  intros: {
+    experience:
+      "Two years at a Robots-as-a-Service startup, from automating internal tools to leading the fleet dashboard.",
+    work: "Products I’ve designed, built and shipped, from fintech to market analytics.",
+    toolkit: "The languages, frameworks and platforms I use to take products from idea to production.",
+  },
 
   resume: "/resume.pdf",
 
