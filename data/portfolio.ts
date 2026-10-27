@@ -12,18 +12,32 @@ export type SocialKey = "linkedin" | "github" | "email" | "x";
 export interface Job {
   role: string;
   company: string;
-  period: string;
+  location?: string;
+  period?: string;
   points: string[];
 }
 
 export interface Project {
   title: string;
+  subtitle?: string;
   description: string;
+  highlights?: string[];
   tags: string[];
-  /** Path to a screenshot in /public, e.g. "/projects/project-one.png" */
+  /** Path to a screenshot in /public, e.g. "/projects/streetlevel.png" */
   image?: string;
   demo?: string;
   code?: string;
+}
+
+export interface Education {
+  school: string;
+  degree: string;
+  year: string;
+}
+
+export interface SkillGroup {
+  label: string;
+  items: string[];
 }
 
 export interface Portfolio {
@@ -35,77 +49,112 @@ export interface Portfolio {
   /** Path to your resume PDF in /public, e.g. "/resume.pdf" */
   resume?: string;
   socials: Partial<Record<SocialKey, string>>;
-  skills: string[];
+  skills: SkillGroup[];
   /** Most recent first. Leave empty to hide the Experience section. */
   experience: Job[];
+  /** Leave empty to hide the Leadership list. */
+  leadership: Job[];
   projects: Project[];
+  /** Leave empty to hide the Education section. */
+  education: Education[];
 }
 
 export const portfolio: Portfolio = {
   name: "Roy Mazumder",
-  role: "Software Engineer",
-  location: "Your City, Country",
+  role: "Full-Stack Software Engineer",
+  location: "Stoneham, MA",
   tagline:
-    "I build clean, reliable software and enjoy turning ideas into products people actually use.",
+    "I build full-stack web apps, cloud monitoring tools and automation, from a robot fleet dashboard spanning 4 continents to a fintech platform with 300+ monthly active users.",
 
   about: [
-    "Replace this with a few sentences about who you are, what you work on, and what you're looking for next.",
-    "Mention the areas you care about most, such as web development, data, or machine learning, and what makes your approach different.",
+    "I'm a software engineer who likes owning a product end to end, from UX design and front-end code to APIs and cloud deployment.",
+    "At Ava Robotics, a Robots-as-a-Service startup, I led development of the dashboard used to monitor and manage hundreds of robots and 32+ Robot Management Servers worldwide, and automated work that used to take the team hours every week.",
+    "Outside work I build my own products. VAULT, a peer-to-peer lending platform, grew to 300+ monthly active users, and I'm currently building StreetLevel, a market research and analytics platform.",
   ],
 
-  // Put your resume at public/resume.pdf, or change this path.
   resume: "/resume.pdf",
 
   socials: {
-    linkedin: "https://www.linkedin.com/in/your-handle",
-    github: "https://github.com/your-handle",
-    email: "you@example.com",
+    linkedin: "https://www.linkedin.com/in/roy-mazumder-6b9382b5",
+    github: "https://github.com/AritraRoy0",
+    email: "roymazumder4@gmail.com",
     x: "",
   },
 
-  skills: ["JavaScript", "TypeScript", "Python", "React", "Next.js", "Node.js", "SQL", "AWS"],
+  skills: [
+    { label: "Languages", items: ["Python", "JavaScript", "TypeScript", "Java", "C"] },
+    { label: "Frameworks", items: ["React", "Next.js", "Node.js", "Express.js", "Flask", "Django"] },
+    {
+      label: "Cloud & Infrastructure",
+      items: ["AWS", "Google Cloud", "Firebase", "Vercel", "Docker", "Kubernetes"],
+    },
+    { label: "Databases", items: ["MySQL", "Firestore"] },
+    { label: "Tools & Practices", items: ["Git", "Postman", "REST APIs", "Stripe API", "Agile / Scrum"] },
+  ],
 
   experience: [
     {
-      role: "Software Engineer",
-      company: "Company Name",
-      period: "2024 – Present",
+      role: "Full Stack Application Developer, Cloud RaaS Monitoring Tools",
+      company: "Ava Robotics Inc",
+      location: "Cambridge, MA",
+      period: "Sep 2024 – Aug 2025",
       points: [
-        "Describe an impact you had, ideally with a number (e.g. cut page load time by 40%).",
-        "Describe a feature or system you owned end to end.",
+        "Led full-stack development, UX design, and AWS cloud deployment of the Ava RMS Administrative Dashboard, used to monitor and manage hundreds of robots and 32+ Robot Management Servers (RMSs) across 4 continents.",
+        "Implemented authentication, role-based access control with privilege escalation and revocation, email notifications, remote server maintenance, software updates, and real-time fleet visibility using JavaScript, React.js, Express.js, and AWS.",
       ],
     },
     {
-      role: "Software Engineering Intern",
-      company: "Another Company",
-      period: "Summer 2023",
-      points: ["What you built, what you learned, and the result."],
+      role: "Software Development Intern, Internal Tools",
+      company: "Ava Robotics Inc",
+      location: "Cambridge, MA",
+      period: "Sep 2023 – Sep 2024",
+      points: [
+        "Automated delivery of 40,000+ reports, events, and logs per quarter to configurable drives, emails, and datasets with 100% accuracy, cutting manual work for a lean team.",
+        "Wrote a script to audit web app and OS versions across RMSs and trigger cross-server software updates in seconds, replacing 4+ hours of manual work each week.",
+        "Automated SSL certificate testing and expiration notifications on AWS, eliminating 8–10 hours of idle time every quarter.",
+      ],
+    },
+  ],
+
+  leadership: [
+    {
+      role: "Vice President",
+      company: "Debate Club",
+      points: [
+        "Trained and mentored new members of the 10-member club in debate and public speaking.",
+        "Organized club events and managed the club treasury and event logistics.",
+      ],
     },
   ],
 
   projects: [
     {
-      title: "Project One",
+      title: "VAULT",
+      subtitle: "Peer-to-peer lending platform",
       description:
-        "A one or two sentence summary of the problem, what you built, and why it matters.",
-      tags: ["React", "Node.js"],
-      image: "",
-      demo: "https://example.com",
-      code: "https://github.com/your-handle/project-one",
+        "Built and launched a peer-to-peer lending platform with user profiles, authentication, dashboards, NoSQL transactions, and Stripe payments.",
+      highlights: ["Grew to 300+ monthly active users, measured with Vercel and Google Cloud analytics."],
+      tags: ["TypeScript", "Next.js", "Stripe", "NoSQL", "Vercel"],
+      demo: "https://gofundyourselfinc.com/",
+      code: "https://github.com/AritraRoy0/GFY",
     },
     {
-      title: "Project Two",
+      title: "StreetLevel",
+      subtitle: "Market research & analytics platform",
       description:
-        "Another project. Focus on the outcome and your role rather than listing every technology.",
-      tags: ["Python", "Data"],
-      code: "https://github.com/your-handle/project-two",
+        "A market analytics web app with overview, analytics, rule-based signals, and portfolio performance workspaces.",
+      highlights: [
+        "Technical and risk analytics on historical prices: SMA, RSI, volatility, drawdown, z-scores, beta, Sharpe and Sortino ratios, and Value at Risk.",
+        "Express/Node.js REST API on MySQL for historical OHLCV data and Firestore for live quotes, with scheduled ingestion on AWS Lambda and EventBridge.",
+      ],
+      tags: ["Next.js", "TypeScript", "Tailwind CSS", "Node.js", "MySQL", "AWS"],
+      image: "/projects/streetlevel.png",
+      demo: "https://streetlevel-peach.vercel.app",
+      code: "https://github.com/AritraRoy0/StreetLevel",
     },
-    {
-      title: "Project Three",
-      description:
-        "A side project, hackathon entry, or open-source contribution you're proud of.",
-      tags: ["TypeScript", "AWS"],
-      demo: "https://example.com",
-    },
+  ],
+
+  education: [
+    { school: "Princeton University", degree: "B.S.E. in Computer Science", year: "2026" },
   ],
 };

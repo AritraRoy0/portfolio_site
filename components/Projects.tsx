@@ -33,8 +33,20 @@ function ProjectCard({ project }: { project: Project }) {
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="mb-2 text-lg font-semibold">{project.title}</h3>
-        <p className="mb-4 flex-1 text-[0.95rem] text-muted">{project.description}</p>
+        <h3 className="text-lg font-semibold">{project.title}</h3>
+        {project.subtitle && <p className="text-sm font-medium text-accent">{project.subtitle}</p>}
+        <div className="mt-2 mb-4 flex-1 text-[0.95rem] text-muted">
+          <p>{project.description}</p>
+          {project.highlights && project.highlights.length > 0 && (
+            <ul className="mt-2 list-[circle] pl-[18px]">
+              {project.highlights.map((h) => (
+                <li key={h} className="mb-1">
+                  {h}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         {project.tags.length > 0 && (
           <ul className="mb-4 flex flex-wrap gap-1.5">
@@ -87,7 +99,8 @@ export function Projects({ projects }: { projects: Project[] }) {
 
   return (
     <Section id="projects" title="Projects">
-      {tags.length > 2 && (
+      {/* Filters only help once there are enough projects to filter. */}
+      {projects.length >= 4 && tags.length > 2 && (
         <div role="group" aria-label="Filter projects" className="mb-6 flex flex-wrap gap-2">
           {tags.map((tag) => (
             <button

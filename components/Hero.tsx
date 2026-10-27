@@ -19,7 +19,7 @@ export function Hero() {
           <a href={resume} target="_blank" rel="noopener noreferrer" className={btnPrimary}>
             View resume
           </a>
-          <a href={resume} download className={btnGhost}>
+          <a href={resume} download={`${name.replace(/\s+/g, "_")}_Resume.pdf`} className={btnGhost}>
             Download PDF
           </a>
         </div>
