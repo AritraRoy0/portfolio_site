@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { BackToTop } from "@/components/BackToTop";
+import { CommandMenu } from "@/components/CommandMenu";
 import { Cursor } from "@/components/Cursor";
 import { Providers } from "@/components/Providers";
-import { ScrollProgress } from "@/components/ScrollProgress";
 import { portfolio } from "@/data/portfolio";
 import "./globals.css";
 
@@ -36,8 +37,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f3f1ec" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0b0c" },
+    { media: "(prefers-color-scheme: light)", color: "#f3f3ee" },
+    { media: "(prefers-color-scheme: dark)", color: "#08080a" },
   ],
 };
 
@@ -73,9 +74,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Skip to content
         </a>
         <Providers>
-          <ScrollProgress />
           <Cursor />
           {children}
+          <BackToTop />
+          <CommandMenu />
         </Providers>
         <div aria-hidden className="grain" />
       </body>

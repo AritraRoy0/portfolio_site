@@ -57,6 +57,10 @@ export interface Portfolio {
   timezone?: string;
   /** Status shown with a green dot at the top of the page. Leave "" to hide. */
   availability?: string;
+  /** What you're working on right now, shown in the hero and About. Leave "" to hide. */
+  currently?: string;
+  /** Small caption beside the hero globe. Leave "" to hide. */
+  globeCaption?: string;
   tagline: string;
   /** Rotating phrases in the hero: "... building <phrase>". */
   focus: string[];
@@ -87,6 +91,8 @@ export const portfolio: Portfolio = {
   role: "Full-Stack Software Engineer",
   timezone: "America/New_York",
   availability: "Open to new opportunities",
+  currently: "Building StreetLevel, a market analytics platform",
+  globeCaption: "Fleet dashboard · 32+ servers · 4 continents",
   tagline:
     "I build full-stack web apps, cloud monitoring tools and automation, from a robot fleet dashboard spanning 4 continents to a fintech platform with 300+ monthly active users.",
 

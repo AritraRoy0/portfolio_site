@@ -1,15 +1,9 @@
 import { ImageResponse } from "next/og";
 import { portfolio } from "@/data/portfolio";
+import { initialsOf } from "@/lib/utils";
 
 export const size = { width: 64, height: 64 };
 export const contentType = "image/png";
-
-const initials = portfolio.name
-  .split(/\s+/)
-  .map((word) => word[0])
-  .join("")
-  .slice(0, 2)
-  .toUpperCase();
 
 export default function Icon() {
   return new ImageResponse(
@@ -21,15 +15,15 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0b0b0c",
-          color: "#ff6a3d",
-          borderRadius: 16,
-          fontSize: 30,
+          background: "#c8ff3d",
+          color: "#0b0b0c",
+          borderRadius: 32,
+          fontSize: 28,
           fontWeight: 700,
           letterSpacing: -2,
         }}
       >
-        {initials}
+        {initialsOf(portfolio.name)}
       </div>
     ),
     size,

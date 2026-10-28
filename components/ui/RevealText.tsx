@@ -18,6 +18,8 @@ interface RevealTextProps {
   /** Extra room below the baseline so descenders are not clipped by the mask. */
   maskClassName?: string;
   accentClassName?: string;
+  /** Classes for an inner span around each unit, e.g. hover effects that must not fight the reveal transform. */
+  unitClassName?: string;
 }
 
 /** Text that rises into place from behind a mask, word by word or letter by letter. */
@@ -31,6 +33,7 @@ export function RevealText({
   trigger,
   maskClassName = "pb-[0.16em] -mb-[0.16em]",
   accentClassName = "font-serif font-normal italic tracking-[-0.01em] text-accent-ink",
+  unitClassName,
 }: RevealTextProps) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "0px 0px -12% 0px" });
@@ -61,7 +64,7 @@ export function RevealText({
                         animate={{ y: show ? "0%" : "125%" }}
                         transition={{ duration: 1.1, ease: EASE_OUT, delay: delay + i * step }}
                       >
-                        {unit}
+                        {unitClassName ? <span className={unitClassName}>{unit}</span> : unit}
                       </motion.span>
                     </span>
                   );

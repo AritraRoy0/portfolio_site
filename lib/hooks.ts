@@ -7,8 +7,8 @@ export const FINE_POINTER = "(hover: hover) and (pointer: fine)";
  * so server and client markup always match.
  */
 export const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
-/** Keep in sync with the `stack` custom variant in globals.css. */
-export const STACK_QUERY = "(min-width: 64rem) and (min-height: 45rem)";
+/** Keep in sync with the `wide` custom variant in globals.css. */
+export const WIDE_QUERY = "(min-width: 64rem) and (min-height: 40rem)";
 
 /** Subscribes to a media query. Returns `serverFallback` during SSR and hydration. */
 export function useMediaQuery(query: string, serverFallback = false) {
@@ -24,6 +24,17 @@ export function useMediaQuery(query: string, serverFallback = false) {
     subscribe,
     () => window.matchMedia(query).matches,
     () => serverFallback,
+  );
+}
+
+const noopSubscribe = () => () => {};
+
+/** True on Apple platforms, for showing ⌘ instead of Ctrl. False during SSR and hydration. */
+export function useIsMac() {
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent),
+    () => false,
   );
 }
 

@@ -15,27 +15,33 @@
   }
 }
 
-/* Screens big enough for the stacked, pinned project cards. */
-@custom-variant stack (@media (min-width: 64rem) and (min-height: 45rem));
-/* Stacked cards on shorter laptop screens: tighter spacing so every card fits. */
-@custom-variant stack-short (@media (min-width: 64rem) and (min-height: 45rem) and (max-height: 52rem));
+/* Screens big enough for the pinned, sideways-scrolling project gallery. Keep in sync with WIDE_QUERY. */
+@custom-variant wide (@media (min-width: 64rem) and (min-height: 40rem));
 
 /* ---------- Theme tokens ---------- */
+/*
+ * `accent` is the signal lime used for fills (buttons, highlights, the footer).
+ * `accent-ink` is the readable version for text, thin lines and icons on the page background.
+ */
 :root {
-  --bg: #f3f1ec;
-  --surface: #fbfaf7;
-  --surface-2: #e9e6df;
-  --fg: #111110;
-  --fg-rgb: 17 17 16;
-  --muted: #5f5d58;
-  --line: rgb(17 17 16 / 0.12);
-  --accent: #ff5a24;
-  --accent-rgb: 255 90 36;
-  --accent-ink: #c2410c;
+  --bg: #f3f3ee;
+  --surface: #fbfbf8;
+  --surface-2: #e8e8e1;
+  --fg: #0d0d0f;
+  --fg-rgb: 13 13 15;
+  --muted: #5b5b62;
+  --line: rgb(13 13 15 / 0.1);
+  --line-strong: rgb(13 13 15 / 0.2);
+  --accent: #c4f52b;
+  --accent-rgb: 196 245 43;
+  --accent-ink: #477300;
+  --accent-ink-rgb: 71 115 0;
   --accent-fg: #0b0b0c;
-  --glow-opacity: 0.55;
-  --grain-opacity: 0.05;
-  --dim-alpha: 0.3;
+  --glow-opacity: 0.7;
+  --grain-opacity: 0.045;
+  --dim-alpha: 0.35;
+  --metric-alpha: 0.6;
+  --shadow: 0 30px 80px -40px rgb(13 13 15 / 0.35);
   --curtain-radius: 1.75rem;
   color-scheme: light;
 }
@@ -48,39 +54,47 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0b0b0c;
-    --surface: #121214;
-    --surface-2: #1a1a1d;
-    --fg: #ededea;
-    --fg-rgb: 237 237 234;
-    --muted: #8d8d92;
-    --line: rgb(237 237 234 / 0.1);
-    --accent: #ff6a3d;
-    --accent-rgb: 255 106 61;
-    --accent-ink: #ff7a50;
+    --bg: #08080a;
+    --surface: #0f0f12;
+    --surface-2: #17171b;
+    --fg: #f1f1ec;
+    --fg-rgb: 241 241 236;
+    --muted: #8b8b94;
+    --line: rgb(241 241 236 / 0.09);
+    --line-strong: rgb(241 241 236 / 0.18);
+    --accent: #c8ff3d;
+    --accent-rgb: 200 255 61;
+    --accent-ink: #cfff5e;
+    --accent-ink-rgb: 207 255 94;
     --accent-fg: #0b0b0c;
-    --glow-opacity: 0.4;
-    --grain-opacity: 0.06;
+    --glow-opacity: 0.26;
+    --grain-opacity: 0.055;
     --dim-alpha: 0.85;
+    --metric-alpha: 0.24;
+    --shadow: 0 40px 100px -40px rgb(0 0 0 / 0.8);
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #0b0b0c;
-  --surface: #121214;
-  --surface-2: #1a1a1d;
-  --fg: #ededea;
-  --fg-rgb: 237 237 234;
-  --muted: #8d8d92;
-  --line: rgb(237 237 234 / 0.1);
-  --accent: #ff6a3d;
-  --accent-rgb: 255 106 61;
-  --accent-ink: #ff7a50;
+  --bg: #08080a;
+  --surface: #0f0f12;
+  --surface-2: #17171b;
+  --fg: #f1f1ec;
+  --fg-rgb: 241 241 236;
+  --muted: #8b8b94;
+  --line: rgb(241 241 236 / 0.09);
+  --line-strong: rgb(241 241 236 / 0.18);
+  --accent: #c8ff3d;
+  --accent-rgb: 200 255 61;
+  --accent-ink: #cfff5e;
+  --accent-ink-rgb: 207 255 94;
   --accent-fg: #0b0b0c;
-  --glow-opacity: 0.4;
-  --grain-opacity: 0.06;
+  --glow-opacity: 0.26;
+  --grain-opacity: 0.055;
   --dim-alpha: 0.85;
+  --metric-alpha: 0.24;
+  --shadow: 0 40px 100px -40px rgb(0 0 0 / 0.8);
   color-scheme: dark;
 }
 
@@ -92,6 +106,7 @@
   --color-fg: var(--fg);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-fg: var(--accent-fg);
@@ -100,6 +115,7 @@
   --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --shadow-float: var(--shadow);
 }
 
 @utility container-page {
@@ -115,14 +131,40 @@
   }
 }
 
+/* Hollow text. Set --outline to change the stroke colour. */
 @utility text-outline {
   color: transparent;
-  -webkit-text-stroke: 1.5px var(--fg);
+  -webkit-text-stroke: 1.5px var(--outline, var(--fg));
+}
+
+/* Small uppercase monospace labels used throughout. */
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+/* Faint blueprint grid. Set --grid to change the cell size. */
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: var(--grid, 4.5rem) var(--grid, 4.5rem);
+}
+
+@utility glass {
+  background: color-mix(in oklab, var(--bg) 72%, transparent);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
 }
 
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
+    scrollbar-color: var(--line-strong) transparent;
   }
 
   body {
@@ -136,7 +178,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--accent-ink);
     outline-offset: 3px;
     border-radius: 6px;
   }
@@ -155,6 +197,20 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+/* ---------- Lenis smooth scrolling ---------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
 }
 
 /* ---------- Intro ---------- */
@@ -182,13 +238,69 @@
   background-size: 200px;
 }
 
+/* ---------- Small motifs ---------- */
+.caret {
+  animation: blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Status dot with a soft ring that keeps pinging outward. */
+.ping-dot {
+  position: relative;
+  display: inline-flex;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.ping-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.spin-slow {
+  animation: spin 14s linear infinite;
+}
+
+.spin-slow-reverse {
+  animation: spin 22s linear infinite reverse;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* ---------- Hero ---------- */
-/* The gradient is already soft, so no blur filter: the drift stays a cheap compositor-only animation. */
 .hero-glow {
-  background: radial-gradient(closest-side, rgb(var(--accent-rgb) / 0.55), rgb(var(--accent-rgb) / 0.12) 60%, transparent);
+  background: radial-gradient(
+    closest-side,
+    rgb(var(--accent-rgb) / 0.45),
+    rgb(var(--accent-rgb) / 0.1) 55%,
+    transparent
+  );
   opacity: var(--glow-opacity);
   will-change: transform;
-  animation: glow-drift 16s ease-in-out infinite alternate;
+  animation: glow-drift 18s ease-in-out infinite alternate;
 }
 
 @keyframes glow-drift {
@@ -196,7 +308,7 @@
     transform: translate3d(0, 0, 0) scale(1);
   }
   to {
-    transform: translate3d(-8%, 10%, 0) scale(1.12);
+    transform: translate3d(-6%, 8%, 0) scale(1.15);
   }
 }
 
@@ -206,7 +318,7 @@
   inset-inline: 0;
   top: -100%;
   height: 100%;
-  background: var(--accent);
+  background: var(--accent-ink);
   animation: scroll-cue 2.4s cubic-bezier(0.76, 0, 0.24, 1) infinite;
 }
 
@@ -218,6 +330,38 @@
   100% {
     top: 100%;
   }
+}
+
+/* Corner tick marks, like crop marks on a drawing. */
+.crop-marks {
+  --tick: 0.75rem;
+  background:
+    linear-gradient(var(--line-strong), var(--line-strong)) top left / var(--tick) 1px,
+    linear-gradient(var(--line-strong), var(--line-strong)) top left / 1px var(--tick),
+    linear-gradient(var(--line-strong), var(--line-strong)) top right / var(--tick) 1px,
+    linear-gradient(var(--line-strong), var(--line-strong)) top right / 1px var(--tick),
+    linear-gradient(var(--line-strong), var(--line-strong)) bottom left / var(--tick) 1px,
+    linear-gradient(var(--line-strong), var(--line-strong)) bottom left / 1px var(--tick),
+    linear-gradient(var(--line-strong), var(--line-strong)) bottom right / var(--tick) 1px,
+    linear-gradient(var(--line-strong), var(--line-strong)) bottom right / 1px var(--tick);
+  background-repeat: no-repeat;
+}
+
+/* ---------- Metric highlights ---------- */
+/* Numbers in experience bullets get a highlighter stroke that sweeps in once the line is read. */
+.metric {
+  color: var(--fg);
+  font-weight: 500;
+  white-space: nowrap;
+  background-image: linear-gradient(rgb(var(--accent-rgb) / var(--metric-alpha)), rgb(var(--accent-rgb) / var(--metric-alpha)));
+  background-repeat: no-repeat;
+  background-position: 0 90%;
+  background-size: 0% 42%;
+  transition: background-size 1.2s var(--ease-expo) 0.2s;
+}
+
+[data-lit="true"] .metric {
+  background-size: 100% 42%;
 }
 
 /* ---------- Cards ---------- */
@@ -234,8 +378,8 @@
 
 .spotlight::before {
   background: radial-gradient(
-    28rem circle at var(--mx, 50%) var(--my, 50%),
-    rgb(var(--accent-rgb) / 0.12),
+    26rem circle at var(--mx, 50%) var(--my, 50%),
+    rgb(var(--accent-ink-rgb) / 0.09),
     transparent 45%
   );
 }
@@ -243,7 +387,7 @@
 /* Glowing border that follows the cursor. */
 .spotlight::after {
   padding: 1px;
-  background: radial-gradient(18rem circle at var(--mx, 50%) var(--my, 50%), var(--accent), transparent 45%);
+  background: radial-gradient(16rem circle at var(--mx, 50%) var(--my, 50%), var(--accent-ink), transparent 45%);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -258,22 +402,38 @@
 
 .media-glow {
   background:
-    radial-gradient(60% 75% at var(--glow-x, 60%) 0%, rgb(var(--accent-rgb) / 0.3), transparent 70%),
-    radial-gradient(50% 60% at calc(100% - var(--glow-x, 60%)) 100%, rgb(var(--fg-rgb) / 0.07), transparent 70%);
+    radial-gradient(60% 70% at var(--glow-x, 60%) 0%, rgb(var(--accent-rgb) / 0.22), transparent 70%),
+    radial-gradient(50% 60% at calc(100% - var(--glow-x, 60%)) 100%, rgb(var(--fg-rgb) / 0.06), transparent 70%);
 }
 
-/* Reduced motion: project cards scroll normally instead of pinning and stacking. */
-@media (prefers-reduced-motion: reduce) {
-  .stack-slot {
-    position: static !important;
-    height: auto !important;
-  }
-  .stack-spacer + .stack-slot {
-    margin-top: 1.25rem;
-  }
-  .stack-spacer {
-    display: none !important;
-  }
+/* Holographic foil on the ID badge. Position follows the pointer. */
+.holo {
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgb(255 255 255 / 0.55) 44%,
+    rgb(var(--accent-rgb) / 0.55) 50%,
+    rgb(110 200 255 / 0.4) 56%,
+    transparent 70%
+  );
+  background-size: 260% 260%;
+  background-position: var(--holo-x, 50%) var(--holo-y, 50%);
+  mix-blend-mode: soft-light;
+}
+
+/* Barcode stripes generated from a repeating gradient. */
+.barcode {
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor 0 2px,
+    transparent 2px 4px,
+    currentColor 4px 5px,
+    transparent 5px 8px,
+    currentColor 8px 11px,
+    transparent 11px 12px,
+    currentColor 12px 13px,
+    transparent 13px 16px
+  );
 }
 
 /* ---------- Footer reveal ---------- */
@@ -297,7 +457,7 @@
 }
 
 /* Very short screens: plain footer so nothing gets cut off. */
-@media (max-height: 34.99rem) {
+@media (max-height: 37.99rem) {
   .footer-reveal {
     height: auto;
     margin-top: 0;
@@ -312,6 +472,8 @@
 .footer-theme {
   background: var(--accent);
   color: var(--accent-fg);
+  --line: rgb(11 11 12 / 0.16);
+  --line-strong: rgb(11 11 12 / 0.3);
 }
 
 .footer-theme ::selection {
