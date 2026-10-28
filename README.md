@@ -18,7 +18,7 @@ All content lives in **`data/portfolio.ts`**. The main fields:
 | `statement`, `about`, `stats` | About section. The statement lights up word by word as you scroll; stats count up |
 | `intros` | One-line intros next to the Experience, Work and Toolkit titles |
 | `experience`, `leadership` | Timeline. Roles at the same company are grouped; numbers in bullets get a highlighter stroke |
-| `projects` | Project gallery. Keep `highlights` short; on shorter screens they hide automatically to fit |
+| `projects` | 3D project carousel. Each project's screenshot is a card on the ring; its text appears underneath |
 | `skills` | Toolkit bento. Groups labelled Languages, Frameworks, Cloud, Databases or Tools each get a live illustration |
 | `education`, `socials`, `resume` | ID badge, links, command menu and the résumé PDF |
 
@@ -45,7 +45,9 @@ Run `npm run build` to check that a production build succeeds.
 - **Hero**: a dotted globe with pulsing fleet nodes and data arcs. It spins faster as you scroll and can be dragged with the mouse.
 - **Command menu**: press <kbd>⌘K</kbd> / <kbd>Ctrl K</kbd> or <kbd>/</kbd> to jump to a section, open a project, copy the email or switch theme.
 - **About**: an ID badge on a lanyard that swings when you scroll fast or drag it sideways.
-- **Work**: on large screens the section pins and the projects slide past sideways; elsewhere they stack.
+- **Work**: a 3D turntable carousel. Drag or swipe the ring, scroll sideways on a trackpad, use the arrow
+  keys or the controls, or click a side card to bring it round. It turns on its own (with a pause button)
+  until you take over. With fewer than six projects, the ring repeats them so it always looks full.
 - **Toolkit**: a code editor typing in each language, an orbit of frameworks, a deploy pipeline, a SQL query and a git graph.
 - **Contact**: a lime footer revealed from underneath the page.
 
@@ -63,9 +65,10 @@ components/
   Preloader.tsx         Boot-sequence intro
   Hero.tsx, Globe.tsx, RotatingWords.tsx
   Marquee.tsx, About.tsx, Badge.tsx, Experience.tsx, Work.tsx, Toolkit.tsx, Footer.tsx
+  work/                 The project carousel: Carousel (ring, controls, autoplay), RingCard, ProjectDetails
   toolkit/              The live illustrations in the Toolkit cards
   Nav.tsx, CommandMenu.tsx, BackToTop.tsx, ThemeToggle.tsx, Cursor.tsx
-  ui/                   Reusable pieces: RevealText, ScrambleText, Magnetic, Tilt, RollingText, CountUp, SpotlightCard
+  ui/                   Reusable pieces: RevealText, ScrambleText, Magnetic, RollingText, CountUp, SpotlightCard
 data/
   portfolio.ts          All of your content
   landmask.ts           Packed land/sea mask for the globe (Natural Earth, public domain)
@@ -73,9 +76,9 @@ lib/                    Small helpers, hooks and the theme switch
 ```
 
 Accessibility: visitors who prefer reduced motion get native scrolling, no intro, a still globe and
-stacked project cards. Everything is keyboard reachable (tabbing into an off-screen project scrolls
-it into view), the command menu is a proper combobox, and animated text has a plain-text version
-for screen readers.
+a carousel that turns instantly and never on its own. Everything is keyboard reachable: the project
+ring is a slider (arrow keys, Home, End), the command menu is a proper combobox, and animated text
+has a plain-text version for screen readers.
 
 Performance: the globe pauses when it is covered or the tab is hidden, and drops to half rate on
 slow devices; Toolkit animations only run while on screen.

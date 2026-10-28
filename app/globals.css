@@ -15,9 +15,6 @@
   }
 }
 
-/* Screens big enough for the pinned, sideways-scrolling project gallery. Keep in sync with WIDE_QUERY. */
-@custom-variant wide (@media (min-width: 64rem) and (min-height: 40rem));
-
 /* ---------- Theme tokens ---------- */
 /*
  * `accent` is the signal lime used for fills (buttons, highlights, the footer).
