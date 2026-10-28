@@ -13,6 +13,15 @@ export const EASE_IN_OUT: Bezier = [0.76, 0, 0.24, 1];
 
 export const pad2 = (n: number) => String(n).padStart(2, "0");
 
+/** "Roy Mazumder" → "RM". */
+export const initialsOf = (name: string) =>
+  name
+    .split(/\s+/)
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
 /** Removes the *highlight* markers used in copy. */
 export const plain = (text: string) => text.replace(/\*/g, "");
 
@@ -62,4 +71,26 @@ export function tokenize(input: string): Token[][] {
   }
   pushSegment(input.slice(last), false);
   return groups;
+}
+
+export interface Chunk {
+  text: string;
+  metric: boolean;
+}
+
+// "40,000+", "100%", "4+ hours", "8–10 hours", "32+", "4 continents"... but not the 3 in "S3".
+const METRIC = /(?<![\w.])\d[\d,.]*(?:[–-]\d[\d,.]*)?(?:%|K\+?|\+)?(?:\s(?:hours?|continents?|seconds?|weeks?|days?))?/g;
+
+/** Splits copy so the numbers in it can be highlighted. */
+export function splitMetrics(input: string): Chunk[] {
+  const chunks: Chunk[] = [];
+  let last = 0;
+  for (const match of input.matchAll(METRIC)) {
+    const start = match.index ?? 0;
+    if (start > last) chunks.push({ text: input.slice(last, start), metric: false });
+    chunks.push({ text: match[0], metric: true });
+    last = start + match[0].length;
+  }
+  if (last < input.length) chunks.push({ text: input.slice(last), metric: false });
+  return chunks;
 }

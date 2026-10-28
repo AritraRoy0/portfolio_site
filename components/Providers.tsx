@@ -1,8 +1,9 @@
 "use client";
 
 import Lenis from "lenis";
-import { MotionConfig } from "motion/react";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { Check } from "lucide-react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 type ScrollTarget = string | number | HTMLElement;
 
@@ -10,6 +11,8 @@ interface ScrollControls {
   /** Smooth-scroll instance. Null for reduced-motion visitors, who get native scrolling. */
   lenis: Lenis | null;
   scrollTo: (target: ScrollTarget, options?: { offset?: number; immediate?: boolean }) => void;
+  /** Scrolls to a section by id. The contact footer is fully uncovered only at the very bottom. */
+  goToSection: (id: string) => void;
 }
 
 interface IntroState {
@@ -18,9 +21,20 @@ interface IntroState {
   finishIntro: () => void;
 }
 
-// Two contexts, so finishing the intro only re-renders the components that animate on it.
+interface CommandState {
+  open: boolean;
+  setOpen: (open: boolean | ((open: boolean) => boolean)) => void;
+}
+
+interface ToastState {
+  toast: (message: string) => void;
+}
+
+// Separate contexts, so each change only re-renders the components that use it.
 const ScrollContext = createContext<ScrollControls | null>(null);
 const IntroContext = createContext<IntroState | null>(null);
+const CommandContext = createContext<CommandState | null>(null);
+const ToastContext = createContext<ToastState | null>(null);
 
 const easeInOutExpo = (t: number) =>
   t === 0
@@ -34,6 +48,9 @@ const easeInOutExpo = (t: number) =>
 export function Providers({ children }: { children: React.ReactNode }) {
   const [lenis, setLenis] = useState<Lenis | null>(null);
   const [introDone, setIntroDone] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
+  const [message, setMessage] = useState<{ id: number; text: string } | null>(null);
+  const toastTimer = useRef(0);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -75,13 +92,60 @@ export function Providers({ children }: { children: React.ReactNode }) {
     [lenis],
   );
 
-  const scrollValue = useMemo(() => ({ lenis, scrollTo }), [lenis, scrollTo]);
+  const goToSection = useCallback(
+    (id: string) => {
+      scrollTo(id === "contact" ? document.documentElement.scrollHeight : id === "top" ? 0 : `#${id}`);
+      document.getElementById(id)?.focus({ preventScroll: true });
+    },
+    [scrollTo],
+  );
+
+  const toast = useCallback((text: string) => {
+    window.clearTimeout(toastTimer.current);
+    setMessage({ id: Date.now(), text });
+    toastTimer.current = window.setTimeout(() => setMessage(null), 2400);
+  }, []);
+
+  useEffect(() => () => window.clearTimeout(toastTimer.current), []);
+
+  const scrollValue = useMemo(() => ({ lenis, scrollTo, goToSection }), [lenis, scrollTo, goToSection]);
   const introValue = useMemo(() => ({ introDone, finishIntro }), [introDone, finishIntro]);
+  const commandValue = useMemo(() => ({ open: commandOpen, setOpen: setCommandOpen }), [commandOpen]);
+  const toastValue = useMemo(() => ({ toast }), [toast]);
 
   return (
     <ScrollContext.Provider value={scrollValue}>
       <IntroContext.Provider value={introValue}>
-        <MotionConfig reducedMotion="user">{children}</MotionConfig>
+        <CommandContext.Provider value={commandValue}>
+          <ToastContext.Provider value={toastValue}>
+            <MotionConfig reducedMotion="user">
+              {children}
+              <div
+                role="status"
+                aria-live="polite"
+                className="pointer-events-none fixed inset-x-0 bottom-6 z-[120] flex justify-center px-4"
+              >
+                <AnimatePresence>
+                  {message && (
+                    <motion.p
+                      key={message.id}
+                      initial={{ opacity: 0, y: 24, scale: 0.9, filter: "blur(6px)" }}
+                      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, y: 12, scale: 0.95, filter: "blur(4px)" }}
+                      transition={{ type: "spring", stiffness: 420, damping: 30 }}
+                      className="flex items-center gap-2.5 rounded-full bg-fg py-2.5 pl-2.5 pr-5 text-sm font-medium text-bg shadow-float"
+                    >
+                      <span className="grid size-6 place-items-center rounded-full bg-accent text-accent-fg">
+                        <Check className="size-3.5" strokeWidth={3} />
+                      </span>
+                      {message.text}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
+            </MotionConfig>
+          </ToastContext.Provider>
+        </CommandContext.Provider>
       </IntroContext.Provider>
     </ScrollContext.Provider>
   );
@@ -97,4 +161,16 @@ export function useIntro() {
   const context = useContext(IntroContext);
   if (!context) throw new Error("useIntro must be used inside <Providers>");
   return context;
+}
+
+export function useCommand() {
+  const context = useContext(CommandContext);
+  if (!context) throw new Error("useCommand must be used inside <Providers>");
+  return context;
+}
+
+export function useToast() {
+  const context = useContext(ToastContext);
+  if (!context) throw new Error("useToast must be used inside <Providers>");
+  return context.toast;
 }

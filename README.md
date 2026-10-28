@@ -9,17 +9,20 @@ All content lives in **`data/portfolio.ts`**. The main fields:
 
 | Field | What it controls |
 |---|---|
-| `name`, `role`, `timezone` | Hero, nav, footer, live local time |
-| `availability` | Status with a green dot at the top of the page (`""` hides it) |
+| `name`, `role`, `timezone` | Hero, nav, ID badge, footer, live local time |
+| `availability` | Status pill with a green dot in the hero, badge and footer (`""` hides it) |
+| `currently` | "Now: …" line in the hero and About (`""` hides it) |
+| `globeCaption` | Caption chip beside the hero globe (`""` hides it) |
 | `focus` | Rotating phrases in the hero ("…building *fintech platforms*") |
-| `marquee` | Words in the big scrolling banner under the hero |
+| `marquee` | Words on the lime tape under the hero (the second tape lists your skills) |
 | `statement`, `about`, `stats` | About section. The statement lights up word by word as you scroll; stats count up |
 | `intros` | One-line intros next to the Experience, Work and Toolkit titles |
-| `experience`, `leadership` | Timeline. Roles at the same company are grouped automatically |
-| `projects` | Pinned, stacking project cards. Keep `highlights` to two short bullets so cards fit on laptops |
-| `skills`, `education`, `socials`, `resume` | Toolkit cards, education card, links and the résumé PDF |
+| `experience`, `leadership` | Timeline. Roles at the same company are grouped; numbers in bullets get a highlighter stroke |
+| `projects` | Project gallery. Keep `highlights` short; on shorter screens they hide automatically to fit |
+| `skills` | Toolkit bento. Groups labelled Languages, Frameworks, Cloud, Databases or Tools each get a live illustration |
+| `education`, `socials`, `resume` | ID badge, links, command menu and the résumé PDF |
 
-Wrap words in `*asterisks*` inside `statement` to set them in the orange italic serif.
+Wrap words in `*asterisks*` inside `statement` and section titles to set them in the accent italic serif.
 
 ### Files
 
@@ -36,29 +39,46 @@ npm run dev
 
 Run `npm run build` to check that a production build succeeds.
 
+## What's on the page
+
+- **Boot intro** (once per browser session): a log prints, a counter runs to 100, and the screen lifts away in columns. Any key or click skips it.
+- **Hero**: a dotted globe with pulsing fleet nodes and data arcs. It spins faster as you scroll and can be dragged with the mouse.
+- **Command menu**: press <kbd>⌘K</kbd> / <kbd>Ctrl K</kbd> or <kbd>/</kbd> to jump to a section, open a project, copy the email or switch theme.
+- **About**: an ID badge on a lanyard that swings when you scroll fast or drag it sideways.
+- **Work**: on large screens the section pins and the projects slide past sideways; elsewhere they stack.
+- **Toolkit**: a code editor typing in each language, an orbit of frameworks, a deploy pipeline, a SQL query and a git graph.
+- **Contact**: a lime footer revealed from underneath the page.
+
 ## How it's put together
 
 ```
 app/
   layout.tsx            Fonts, SEO metadata, theme + intro boot script, global providers
   page.tsx              Section order, and the curtain that slides over the hero
-  globals.css           Tailwind, light/dark colour tokens, effects (grain, footer reveal, spotlight)
+  globals.css           Tailwind, light/dark colour tokens, effects (grain, grid, spotlight, footer reveal)
   opengraph-image.tsx   Link preview image for LinkedIn, Slack, etc.
   icon.tsx              Favicon
 components/
-  Providers.tsx         Lenis smooth scrolling, intro state, Motion config
-  Preloader.tsx         Counter intro (once per browser session)
-  Hero.tsx, DotField.tsx, RotatingWords.tsx
-  Marquee.tsx, About.tsx, Experience.tsx, Work.tsx, Toolkit.tsx, Footer.tsx
-  Nav.tsx, ThemeToggle.tsx, Cursor.tsx, ScrollProgress.tsx
-  ui/                   Reusable pieces: RevealText, Magnetic, RollingText, CountUp, SpotlightCard
-data/portfolio.ts       All of your content
-lib/                    Small helpers and hooks
+  Providers.tsx         Lenis smooth scrolling, intro, command menu and toast state, Motion config
+  Preloader.tsx         Boot-sequence intro
+  Hero.tsx, Globe.tsx, RotatingWords.tsx
+  Marquee.tsx, About.tsx, Badge.tsx, Experience.tsx, Work.tsx, Toolkit.tsx, Footer.tsx
+  toolkit/              The live illustrations in the Toolkit cards
+  Nav.tsx, CommandMenu.tsx, BackToTop.tsx, ThemeToggle.tsx, Cursor.tsx
+  ui/                   Reusable pieces: RevealText, ScrambleText, Magnetic, Tilt, RollingText, CountUp, SpotlightCard
+data/
+  portfolio.ts          All of your content
+  landmask.ts           Packed land/sea mask for the globe (Natural Earth, public domain)
+lib/                    Small helpers, hooks and the theme switch
 ```
 
-Accessibility: visitors who prefer reduced motion get native scrolling, no intro and no
-scroll-driven movement. Everything is keyboard reachable, and animated text has a plain-text
-version for screen readers.
+Accessibility: visitors who prefer reduced motion get native scrolling, no intro, a still globe and
+stacked project cards. Everything is keyboard reachable (tabbing into an off-screen project scrolls
+it into view), the command menu is a proper combobox, and animated text has a plain-text version
+for screen readers.
+
+Performance: the globe pauses when it is covered or the tab is hidden, and drops to half rate on
+slow devices; Toolkit animations only run while on screen.
 
 ## Deploy to Vercel
 
