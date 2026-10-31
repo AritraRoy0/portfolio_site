@@ -84,12 +84,12 @@ export function RingCard({
         )}
       </span>
 
-      {/* Fog for cards turned away from the front. */}
-      <motion.span style={{ opacity: fog }} className="pointer-events-none absolute inset-0 bg-bg" />
+      {/* Fog for cards turned away from the front. Own layers, so fading them never repaints the card. */}
+      <motion.span style={{ opacity: fog }} className="pointer-events-none absolute inset-0 bg-bg will-change-[opacity]" />
       {/* Accent edge on the front card. */}
       <motion.span
         style={{ opacity: edge }}
-        className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_0_0_1.5px_var(--accent-ink)]"
+        className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_0_0_1.5px_var(--accent-ink)] will-change-[opacity]"
       />
       {/* A light sweep each time a card arrives at the front. */}
       <AnimatePresence>
@@ -107,7 +107,7 @@ export function RingCard({
     </>
   );
 
-  const faceClass = `${FACE} group/face flex flex-col border-line-strong bg-bg shadow-[0_40px_80px_-40px_rgb(0_0_0/0.7)] transition-transform duration-700 ease-expo [-webkit-box-reflect:below_10px_linear-gradient(transparent_58%,rgb(255_255_255/0.2))] hover:[transform:translateZ(26px)]`;
+  const faceClass = `${FACE} group/face flex flex-col border-line-strong bg-bg shadow-[0_40px_80px_-40px_rgb(0_0_0/0.7)] transition-transform duration-700 ease-expo hover:[transform:translateZ(26px)]`;
 
   return (
     <div

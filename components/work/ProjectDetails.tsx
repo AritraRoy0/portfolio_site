@@ -11,8 +11,8 @@ import { RollingText } from "../ui/RollingText";
 
 /** Children of the details panel rise in one after another. */
 export const DETAIL_ITEM: Variants = {
-  enter: { opacity: 0, y: 18, filter: "blur(6px)" },
-  center: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.7, ease: EASE_OUT } },
+  enter: { opacity: 0, y: 18 },
+  center: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE_OUT } },
   exit: { opacity: 0, transition: { duration: 0.2 } },
 };
 
