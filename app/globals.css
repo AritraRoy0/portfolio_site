@@ -151,11 +151,12 @@
   background-size: var(--grid, 4.5rem) var(--grid, 4.5rem);
 }
 
+/* Blur cost grows with its radius; behind a 72% tint, 12px looks the same as more. */
 @utility glass {
   background: color-mix(in oklab, var(--bg) 72%, transparent);
   border: 1px solid var(--line);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
 }
 
 @layer base {
@@ -309,24 +310,37 @@ html.lenis body {
   }
 }
 
+/* Moved with a transform rather than `top`, so the loop never triggers layout. */
 .scroll-cue::after {
   content: "";
   position: absolute;
   inset-inline: 0;
-  top: -100%;
+  top: 0;
   height: 100%;
   background: var(--accent-ink);
+  transform: translateY(-100%);
   animation: scroll-cue 2.4s cubic-bezier(0.76, 0, 0.24, 1) infinite;
 }
 
 @keyframes scroll-cue {
   0% {
-    top: -100%;
+    transform: translateY(-100%);
   }
   65%,
   100% {
-    top: 100%;
+    transform: translateY(100%);
   }
+}
+
+/* The pinned hero once the page fully covers it: hidden, with its loops paused. */
+.hero-covered {
+  visibility: hidden;
+}
+
+.hero-covered *,
+.hero-covered *::before,
+.hero-covered *::after {
+  animation-play-state: paused !important;
 }
 
 /* Corner tick marks, like crop marks on a drawing. */

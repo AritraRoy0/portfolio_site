@@ -10,12 +10,11 @@ const RY = 33;
 // Short numbers serialise identically on server and client, so hydration matches.
 const round = (n: number) => Math.round(n * 100) / 100;
 
+// Chips move by transform alone (container units are shares of the box), so each frame skips layout.
 function position(angle: number) {
   const depth = (Math.sin(angle) + 1) / 2; // 0 = back, 1 = front
   return {
-    left: `${round(50 + Math.cos(angle) * RX)}%`,
-    top: `${round(50 + Math.sin(angle) * RY)}%`,
-    transform: `translate(-50%, -50%) scale(${round(0.78 + depth * 0.3)})`,
+    transform: `translate(-50%, -50%) translate(${round(Math.cos(angle) * RX)}cqw, ${round(Math.sin(angle) * RY)}cqh) scale(${round(0.78 + depth * 0.3)})`,
     opacity: round(0.45 + depth * 0.55),
     zIndex: Math.round(depth * 10),
   };
@@ -49,7 +48,7 @@ export function Orbit({ items, core = "</>" }: { items: string[]; core?: string 
       ref={box}
       onPointerEnter={() => (hovered.current = true)}
       onPointerLeave={() => (hovered.current = false)}
-      className="relative h-full min-h-[15rem] w-full"
+      className="relative h-full min-h-[15rem] w-full [container-type:size]"
     >
       <div aria-hidden className="absolute inset-0 grid place-items-center">
         <span className="absolute h-[66%] w-[76%] rounded-[50%] border border-dashed border-line-strong" />
@@ -67,7 +66,7 @@ export function Orbit({ items, core = "</>" }: { items: string[]; core?: string 
               chips.current[i] = node;
             }}
             style={position(slot(i))}
-            className="absolute whitespace-nowrap rounded-full border border-line bg-surface px-4 py-2 text-[15px] font-medium shadow-[0_8px_24px_-12px_rgb(0_0_0/0.4)] transition-colors duration-300 hover:border-accent-ink hover:text-accent-ink"
+            className="absolute left-1/2 top-1/2 whitespace-nowrap rounded-full border border-line bg-surface px-4 py-2 text-[15px] font-medium shadow-[0_8px_24px_-12px_rgb(0_0_0/0.4)] transition-colors duration-300 hover:border-accent-ink hover:text-accent-ink"
           >
             {item}
           </li>

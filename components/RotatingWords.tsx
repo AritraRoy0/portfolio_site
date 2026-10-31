@@ -5,15 +5,24 @@ import { useEffect, useState } from "react";
 import { EASE_OUT } from "@/lib/utils";
 
 /** Cycles through phrases with a 3D flip. Screen readers get the full list once. */
-export function RotatingWords({ words, interval = 2600 }: { words: string[]; interval?: number }) {
+export function RotatingWords({
+  words,
+  interval = 2600,
+  paused = false,
+}: {
+  words: string[];
+  interval?: number;
+  /** Stops cycling, e.g. while the words are covered. */
+  paused?: boolean;
+}) {
   const [index, setIndex] = useState(0);
   const reduced = useReducedMotion();
 
   useEffect(() => {
-    if (reduced || words.length < 2) return;
+    if (reduced || paused || words.length < 2) return;
     const id = window.setInterval(() => setIndex((i) => (i + 1) % words.length), interval);
     return () => window.clearInterval(id);
-  }, [reduced, words.length, interval]);
+  }, [reduced, paused, words.length, interval]);
 
   if (words.length === 0) return null;
 

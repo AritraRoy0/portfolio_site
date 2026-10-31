@@ -1,11 +1,11 @@
 "use client";
 
 import { ArrowDown, ArrowUpRight, MousePointer2 } from "lucide-react";
-import { motion, useScroll, useSpring, useTransform } from "motion/react";
-import { useEffect, useRef, type MouseEvent } from "react";
+import { motion, useMotionValueEvent, useScroll, useSpring, useTransform } from "motion/react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { portfolio } from "@/data/portfolio";
 import { FINE_POINTER, REDUCED_MOTION, useLocalTime, useMediaQuery } from "@/lib/hooks";
-import { EASE_OUT } from "@/lib/utils";
+import { cn, EASE_OUT } from "@/lib/utils";
 import { Globe } from "./Globe";
 import { useIntro, useScrollControls } from "./Providers";
 import { RotatingWords } from "./RotatingWords";
@@ -31,6 +31,8 @@ export function Hero() {
   const fine = useMediaQuery(FINE_POINTER);
   const time = useLocalTime(portfolio.timezone);
   const viewport = useRef(800);
+  const section = useRef<HTMLElement>(null);
+  const [covered, setCovered] = useState(false);
 
   useEffect(() => {
     const update = () => (viewport.current = window.innerHeight);
@@ -48,6 +50,13 @@ export function Hero() {
   const firstX = useTransform(progress, [0, 1], ["0vw", "-9vw"]);
   const lastX = useTransform(progress, [0, 1], ["0vw", "7vw"]);
   const globeScale = useTransform(progress, [0, 1], [1, 1.3]);
+
+  // Once the page fully covers the pinned hero (rounded corners included), hide it and
+  // pause its loops so they stop costing frames underneath.
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const height = section.current?.offsetHeight ?? viewport.current;
+    setCovered(y > height + 64);
+  });
 
   // Pointer: the globe and glow drift gently against the mouse.
   const pointerX = useSpring(0, PARALLAX);
@@ -82,7 +91,12 @@ export function Hero() {
   };
 
   return (
-    <section id="top" aria-label="Introduction" className="sticky top-0 h-svh min-h-[38rem] overflow-hidden">
+    <section
+      ref={section}
+      id="top"
+      aria-label="Introduction"
+      className={cn("sticky top-0 h-svh min-h-[38rem] overflow-hidden", covered && "hero-covered")}
+    >
       {/* Backdrop: blueprint grid and a drifting glow. */}
       <motion.div
         aria-hidden
@@ -92,7 +106,10 @@ export function Hero() {
         transition={{ duration: 1.8, ease: "easeOut", delay: 0.1 }}
       >
         <div className="bg-grid absolute inset-0 opacity-80 [mask-image:radial-gradient(ellipse_75%_65%_at_72%_45%,#000_15%,transparent_75%)]" />
-        <motion.div style={reduced ? undefined : { x: glowX, y: glowY }} className="absolute -right-[20%] -top-[25%] size-[85vmax]">
+        <motion.div
+          style={reduced ? undefined : { x: glowX, y: glowY }}
+          className="absolute -right-[20%] -top-[25%] size-[85vmax] will-change-transform"
+        >
           <div className="hero-glow size-full rounded-full" />
         </motion.div>
       </motion.div>
@@ -101,7 +118,7 @@ export function Hero() {
       <motion.div
         aria-hidden
         style={reduced ? undefined : { scale: globeScale, x: globeX, y: globeY }}
-        className="pointer-events-none absolute left-[28%] top-[3%] aspect-square w-[125vw] opacity-80 sm:left-[40%] sm:w-[95vw] md:left-auto md:right-[-13vw] md:top-[calc(50%-min(32vw,59svh))] md:w-[min(64vw,118svh)] md:opacity-100"
+        className="pointer-events-none absolute left-[28%] top-[3%] aspect-square w-[125vw] opacity-80 will-change-transform sm:left-[40%] sm:w-[95vw] md:left-auto md:right-[-13vw] md:top-[calc(50%-min(32vw,59svh))] md:w-[min(64vw,118svh)] md:opacity-100"
       >
         <Globe active={introDone} className="size-full" />
         {portfolio.globeCaption && (
@@ -124,9 +141,10 @@ export function Hero() {
         )}
       </motion.div>
 
+      {/* Scroll-driven layers are promoted, so the big type is moved by the GPU instead of repainted each frame. */}
       <motion.div
         style={reduced ? undefined : { scale, y: lift }}
-        className="container-page relative z-10 flex h-full origin-top flex-col pb-5 pt-24 md:pb-6 md:pt-28"
+        className="container-page relative z-10 flex h-full origin-top flex-col pb-5 pt-24 will-change-transform md:pb-6 md:pt-28"
       >
         {portfolio.availability && (
           <motion.p
@@ -182,7 +200,7 @@ export function Hero() {
             {portfolio.role}
             <span className="flex flex-wrap items-baseline gap-x-[0.3em]">
               <span className="text-muted">building</span>
-              <RotatingWords words={portfolio.focus} />
+              <RotatingWords words={portfolio.focus} paused={covered} />
             </span>
           </motion.p>
 
@@ -238,7 +256,7 @@ export function Hero() {
       <motion.div
         aria-hidden
         style={{ opacity: reduced ? 0 : dim }}
-        className="pointer-events-none absolute inset-0 z-20 bg-[rgb(0_0_0/var(--dim-alpha))]"
+        className="pointer-events-none absolute inset-0 z-20 bg-[rgb(0_0_0/var(--dim-alpha))] will-change-[opacity]"
       />
     </section>
   );

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { BackToTop } from "@/components/BackToTop";
 import { CommandMenu } from "@/components/CommandMenu";
 import { Cursor } from "@/components/Cursor";
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <CommandMenu />
         </Providers>
         <div aria-hidden className="grain" />
+        <Analytics />
       </body>
     </html>
   );

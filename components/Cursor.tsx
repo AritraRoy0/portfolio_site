@@ -80,61 +80,61 @@ export function Cursor() {
   const text = current === "label" ? (mode === "label" ? label : override ?? "") : "";
   const ringSize = current === "link" ? 56 : 34;
 
+  // Each piece is its own small fixed layer: blending only the pixels under the ring and
+  // dot is far cheaper than a full-screen blend layer, and moving them never repaints.
+  const layer = "pointer-events-none fixed left-0 top-0 will-change-transform";
+
   return (
     <>
-      <div aria-hidden className="pointer-events-none fixed inset-0 z-[90] mix-blend-difference">
-        <motion.div className="absolute left-0 top-0" style={{ x: followX, y: followY }}>
-          <motion.div
-            className="-translate-x-1/2 -translate-y-1/2 rounded-full border border-white"
-            initial={false}
-            animate={{
-              width: ringSize,
-              height: ringSize,
-              opacity: visible && current !== "label" ? (current === "link" ? 1 : 0.5) : 0,
-              scale: pressed ? 0.78 : 1,
-              backgroundColor: current === "link" ? "rgba(255,255,255,1)" : "rgba(255,255,255,0)",
-            }}
-            transition={{ type: "spring", stiffness: 340, damping: 26 }}
-          />
-        </motion.div>
-        <motion.div className="absolute left-0 top-0" style={{ x, y }}>
-          <motion.div
-            className="size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
-            initial={false}
-            animate={{ opacity: visible && current === "default" ? 1 : 0 }}
-            transition={{ duration: 0.15 }}
-          />
-        </motion.div>
-      </div>
+      <motion.div aria-hidden className={`${layer} z-[90] mix-blend-difference`} style={{ x: followX, y: followY }}>
+        <motion.div
+          className="-translate-x-1/2 -translate-y-1/2 rounded-full border border-white"
+          initial={false}
+          animate={{
+            width: ringSize,
+            height: ringSize,
+            opacity: visible && current !== "label" ? (current === "link" ? 1 : 0.5) : 0,
+            scale: pressed ? 0.78 : 1,
+            backgroundColor: current === "link" ? "rgba(255,255,255,1)" : "rgba(255,255,255,0)",
+          }}
+          transition={{ type: "spring", stiffness: 340, damping: 26 }}
+        />
+      </motion.div>
+      <motion.div aria-hidden className={`${layer} z-[90] mix-blend-difference`} style={{ x, y }}>
+        <motion.div
+          className="size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
+          initial={false}
+          animate={{ opacity: visible && current === "default" ? 1 : 0 }}
+          transition={{ duration: 0.15 }}
+        />
+      </motion.div>
 
-      <div aria-hidden className="pointer-events-none fixed inset-0 z-[91]">
-        <motion.div className="absolute left-0 top-0" style={{ x: followX, y: followY }}>
-          <AnimatePresence>
-            {visible && current === "label" && (
-              <motion.div
-                key="label"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: pressed ? 0.85 : 1, opacity: 1 }}
-                exit={{ scale: 0, opacity: 0 }}
-                transition={{ type: "spring", stiffness: 340, damping: 24 }}
-                className="grid size-[4.5rem] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-accent font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-accent-fg shadow-[0_10px_30px_-10px_rgb(0_0_0/0.5)]"
-              >
-                <AnimatePresence mode="popLayout" initial={false}>
-                  <motion.span
-                    key={text}
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -10, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {text}
-                  </motion.span>
-                </AnimatePresence>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </div>
+      <motion.div aria-hidden className={`${layer} z-[91]`} style={{ x: followX, y: followY }}>
+        <AnimatePresence>
+          {visible && current === "label" && (
+            <motion.div
+              key="label"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: pressed ? 0.85 : 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 340, damping: 24 }}
+              className="grid size-[4.5rem] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-accent font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-accent-fg shadow-[0_10px_30px_-10px_rgb(0_0_0/0.5)]"
+            >
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                  key={text}
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -10, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {text}
+                </motion.span>
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </>
   );
 }

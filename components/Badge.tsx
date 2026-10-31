@@ -56,7 +56,9 @@ export function Badge() {
     const element = card.current;
     if (!element || reduced) return;
     if (drag.current && drag.current.id === event.pointerId) {
-      target.set(clamp((event.clientX - drag.current.x) * 0.14, 32));
+      // The badge hangs from its top, where a positive (clockwise) rotation swings the card
+      // left, so dragging right needs a negative angle for the card to follow the pointer.
+      target.set(clamp((drag.current.x - event.clientX) * 0.14, 32));
       return;
     }
     if (!fine) return;
@@ -78,7 +80,7 @@ export function Badge() {
 
   return (
     <figure className="relative mx-auto w-[min(19rem,80vw)] select-none" aria-label={`ID badge for ${portfolio.name}`}>
-      <motion.div style={reduced ? undefined : { rotate: swing }} className="origin-top">
+      <motion.div style={reduced ? undefined : { rotate: swing }} className="origin-top will-change-transform">
         {/* Lanyard */}
         <div aria-hidden className="relative mx-auto h-28 w-8 overflow-hidden bg-accent text-accent-fg md:h-36">
           <div className="label-mono absolute inset-0 flex items-center justify-center text-[9px] [writing-mode:vertical-rl]">

@@ -50,7 +50,8 @@ function Tape({ children, baseVelocity, className }: { children: ReactNode; base
 
   return (
     <div ref={strip} className={cn("overflow-hidden", className)}>
-      <motion.div style={{ x }} className="flex w-max whitespace-nowrap">
+      {/* Its own layer, so drifting every frame moves pixels instead of repainting the big type. */}
+      <motion.div style={{ x }} className="flex w-max whitespace-nowrap will-change-transform">
         <div className="flex shrink-0 items-center">{children}</div>
         <div className="flex shrink-0 items-center">{children}</div>
       </motion.div>
