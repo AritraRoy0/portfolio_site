@@ -6,6 +6,7 @@ import { CommandMenu } from "@/components/CommandMenu";
 import { Cursor } from "@/components/Cursor";
 import { Providers } from "@/components/Providers";
 import { portfolio } from "@/data/portfolio";
+import { indexable, keywords, siteTitle, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const sans = Geist({ subsets: ["latin"], variable: "--font-geist" });
@@ -17,23 +18,37 @@ const serif = Instrument_Serif({
   variable: "--font-instrument",
 });
 
-// Set NEXT_PUBLIC_SITE_URL in Vercel if you add a custom domain.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://portfoliosite-rust-rho.vercel.app";
-const title = `${portfolio.name} | ${portfolio.role}`;
-
+// Search engines get `searchDescription`; link previews get the friendlier first-person tagline.
+// Verification codes come from Google Search Console and Bing Webmaster Tools (see README).
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title,
-  description: portfolio.tagline,
-  authors: [{ name: portfolio.name }],
+  title: { default: siteTitle, template: `%s | ${portfolio.name}` },
+  description: portfolio.searchDescription,
+  applicationName: portfolio.name,
+  authors: [{ name: portfolio.name, url: siteUrl }],
+  creator: portfolio.name,
+  keywords,
+  category: "technology",
+  robots: indexable
+    ? {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+      }
+    : { index: false, follow: false },
   openGraph: {
-    title,
+    title: siteTitle,
     description: portfolio.tagline,
     type: "website",
     url: "/",
     siteName: portfolio.name,
+    locale: "en_US",
   },
-  twitter: { card: "summary_large_image", title, description: portfolio.tagline },
+  twitter: { card: "summary_large_image", title: siteTitle, description: portfolio.tagline },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    other: process.env.BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.BING_SITE_VERIFICATION } : undefined,
+  },
 };
 
 export const viewport: Viewport = {
@@ -50,16 +65,6 @@ const bootScript = `try{var d=document.documentElement,t=localStorage.getItem("t
 // Without JavaScript, show everything that would normally animate in.
 const noScriptStyles = `.preloader{display:none!important}[data-reveal]{opacity:1!important;transform:none!important}`;
 
-const personJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: portfolio.name,
-  jobTitle: portfolio.role,
-  url: siteUrl,
-  sameAs: [portfolio.socials.linkedin, portfolio.socials.github, portfolio.socials.x].filter(Boolean),
-  alumniOf: portfolio.education.map((item) => ({ "@type": "CollegeOrUniversity", name: item.school })),
-};
-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable} ${serif.variable}`} suppressHydrationWarning>
@@ -68,7 +73,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <noscript>
           <style>{noScriptStyles}</style>
         </noscript>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
       </head>
       <body className="bg-bg font-sans text-fg antialiased">
         <a href="#main" className="skip-link">

@@ -93,7 +93,9 @@ export function About() {
         viewport={{ once: true }}
         transition={{ duration: 1.6, ease: EASE_OUT }}
       />
-      <SectionLabel index="01">About</SectionLabel>
+      <SectionLabel index="01" as="h2">
+        About
+      </SectionLabel>
 
       <div className="mt-10 grid gap-16 md:mt-14 lg:grid-cols-12 lg:gap-10">
         <div className="min-w-0 lg:col-span-8">

@@ -7,11 +7,24 @@ import { FadeUp } from "./FadeUp";
 import { RevealText } from "./RevealText";
 import { ScrambleText } from "./ScrambleText";
 
-/** "[01] ——— About": index, a rule that draws in, and a label that decodes. */
-export function SectionLabel({ index, children, className }: { index: string; children: string; className?: string }) {
+/**
+ * "[01] ——— About": index, a rule that draws in, and a label that decodes. Pass `as="h2"`
+ * where the label is the section's only heading, so the page outline still has it.
+ */
+export function SectionLabel({
+  index,
+  children,
+  className,
+  as: Tag = "p",
+}: {
+  index: string;
+  children: string;
+  className?: string;
+  as?: "p" | "h2";
+}) {
   return (
-    <p className={cn("label-mono flex items-center gap-3 text-muted", className)}>
-      <span className="text-accent-ink">[{index}]</span>
+    <Tag className={cn("label-mono flex items-center gap-3 text-muted", className)}>
+      <span aria-hidden className="text-accent-ink">[{index}]</span>
       <motion.span
         aria-hidden
         className="h-px w-10 origin-left bg-line-strong"
@@ -21,7 +34,7 @@ export function SectionLabel({ index, children, className }: { index: string; ch
         transition={{ duration: 1.2, ease: EASE_OUT, delay: 0.1 }}
       />
       <ScrambleText text={children} delay={0.15} />
-    </p>
+    </Tag>
   );
 }
 

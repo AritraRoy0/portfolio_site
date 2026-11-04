@@ -25,7 +25,7 @@ export function RingCard({
   slots,
   position,
   front,
-  priority,
+  eager,
   onSelect,
 }: {
   project: Project;
@@ -38,7 +38,8 @@ export function RingCard({
   position: MotionValue<number>;
   /** True for the card currently facing the viewer. */
   front: boolean;
-  priority?: boolean;
+  /** Load the screenshot right away rather than lazily. The ring is below the fold, so no <head> preload. */
+  eager?: boolean;
   onSelect: (slot: number) => void;
 }) {
   const offset = useTransform(position, (p) => wrapOffset(slot - p, slots));
@@ -66,7 +67,7 @@ export function RingCard({
             alt=""
             fill
             draggable={false}
-            priority={priority}
+            loading={eager ? "eager" : undefined}
             sizes="(min-width: 1024px) 40vw, (min-width: 640px) 52vw, 66vw"
             className="object-cover object-top transition-transform duration-[1.2s] ease-expo group-hover/face:scale-[1.04]"
           />

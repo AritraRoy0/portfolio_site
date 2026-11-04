@@ -25,6 +25,17 @@ export const initialsOf = (name: string) =>
 /** Removes the *highlight* markers used in copy. */
 export const plain = (text: string) => text.replace(/\*/g, "");
 
+/** "Data & Analytics!" → "data-analytics". */
+export const slugify = (text: string) =>
+  text
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+/** Each project gets its own page at /projects/<slugified title>. */
+export const projectPath = (project: { title: string }) => `/projects/${slugify(project.title)}`;
+
 export function hostOf(url?: string) {
   if (!url) return "";
   try {

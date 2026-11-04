@@ -16,7 +16,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { portfolio } from "@/data/portfolio";
 import { toggleTheme } from "@/lib/theme";
-import { cn } from "@/lib/utils";
+import { cn, projectPath } from "@/lib/utils";
 import { GitHubIcon, LinkedInIcon, XIcon } from "./Icons";
 import { NAV_LINKS } from "./Nav";
 import { useCommand, useScrollControls, useToast } from "./Providers";
@@ -72,6 +72,15 @@ export function CommandMenu() {
       run: () => goToSection(link.id),
     }));
     for (const project of portfolio.projects) {
+      items.push({
+        id: `page-${project.title}`,
+        group: "Projects",
+        label: `${project.title} project page`,
+        hint: "Overview, stack and links",
+        keywords: project.tags.join(" "),
+        icon: ArrowRight,
+        run: () => window.location.assign(projectPath(project)),
+      });
       if (project.demo)
         items.push({
           id: `demo-${project.title}`,

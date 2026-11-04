@@ -380,7 +380,7 @@ export function Carousel({ projects }: { projects: Project[] }) {
                   slots={slots}
                   position={position}
                   front={s === slot}
-                  priority={s === 0}
+                  eager={s === 0}
                   onSelect={select}
                 />
               ))}
