@@ -140,12 +140,13 @@ export function Footer() {
   }, [scrollYProgress]);
 
   const { email, linkedin, github, x } = portfolio.socials;
+  // `me` marks profiles as the same person as this site (rel="me"), which helps search engines connect them.
   const links = [
-    linkedin && { label: "LinkedIn", href: linkedin },
-    github && { label: "GitHub", href: github },
-    x && { label: "X", href: x },
+    linkedin && { label: "LinkedIn", href: linkedin, me: true },
+    github && { label: "GitHub", href: github, me: true },
+    x && { label: "X", href: x, me: true },
     portfolio.resume && { label: "Résumé", href: portfolio.resume },
-  ].filter(Boolean) as { label: string; href: string }[];
+  ].filter(Boolean) as { label: string; href: string; me?: boolean }[];
 
   return (
     <div ref={ref} id="contact" tabIndex={-1} className="footer-reveal">
@@ -213,7 +214,7 @@ export function Footer() {
                     <a
                       href={link.href}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel={link.me ? "me noopener noreferrer" : "noopener noreferrer"}
                       className="group relative flex items-center gap-4 overflow-hidden px-1 py-3.5 md:py-4"
                     >
                       <span

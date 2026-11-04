@@ -11,7 +11,10 @@ interface ScrollControls {
   /** Smooth-scroll instance. Null for reduced-motion visitors, who get native scrolling. */
   lenis: Lenis | null;
   scrollTo: (target: ScrollTarget, options?: { offset?: number; immediate?: boolean }) => void;
-  /** Scrolls to a section by id. The contact footer is fully uncovered only at the very bottom. */
+  /**
+   * Scrolls to a section by id. The contact footer is fully uncovered only at the very bottom.
+   * On pages without that section (project pages), goes to it on the home page instead.
+   */
   goToSection: (id: string) => void;
 }
 
@@ -94,8 +97,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   const goToSection = useCallback(
     (id: string) => {
+      const section = document.getElementById(id);
+      if (!section) {
+        window.location.assign(id === "top" ? "/" : `/#${id}`);
+        return;
+      }
       scrollTo(id === "contact" ? document.documentElement.scrollHeight : id === "top" ? 0 : `#${id}`);
-      document.getElementById(id)?.focus({ preventScroll: true });
+      section.focus({ preventScroll: true });
     },
     [scrollTo],
   );

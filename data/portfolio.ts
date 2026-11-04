@@ -26,6 +26,11 @@ export interface Project {
   description: string;
   /** Keep to two short bullets so the card fits on laptop screens. */
   highlights?: string[];
+  /**
+   * Longer write-up for the project's own page (/projects/<title>): the problem, your
+   * approach, what you learned. A few paragraphs here help the page show up in search.
+   */
+  details?: string[];
   tags: string[];
   /** Path to a 16:9 screenshot in /public, e.g. "/projects/streetlevel.png" */
   image?: string;
@@ -62,6 +67,11 @@ export interface Portfolio {
   /** Small caption beside the hero globe. Leave "" to hide. */
   globeCaption?: string;
   tagline: string;
+  /**
+   * The snippet under your name in Google results. Keep it under ~155 characters and
+   * write it in the third person, with your name. Link previews use `tagline` instead.
+   */
+  searchDescription: string;
   /** Rotating phrases in the hero: "... building <phrase>". */
   focus: string[];
   /** Words in the big scrolling banner under the hero. */
@@ -95,6 +105,9 @@ export const portfolio: Portfolio = {
   globeCaption: "Fleet dashboard · 32+ servers · 4 continents",
   tagline:
     "I build full-stack web apps, cloud monitoring tools and automation, from a robot fleet dashboard spanning 4 continents to a fintech platform with 300+ monthly active users.",
+
+  searchDescription:
+    "Roy Mazumder is a full-stack software engineer and Princeton CS graduate building web apps, cloud dashboards and automation with React, Node.js and AWS.",
 
   focus: ["fintech platforms", "cloud dashboards", "analytics tools", "time-saving automation"],
 

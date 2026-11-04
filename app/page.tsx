@@ -1,14 +1,22 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { About } from "@/components/About";
 import { Experience } from "@/components/Experience";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
+import { JsonLd } from "@/components/JsonLd";
 import { Marquee } from "@/components/Marquee";
 import { Nav } from "@/components/Nav";
 import { Preloader } from "@/components/Preloader";
 import { Toolkit } from "@/components/Toolkit";
 import { Work } from "@/components/Work";
 import { portfolio } from "@/data/portfolio";
+import { homeJsonLd } from "@/lib/seo";
+
+// Set per page rather than in the layout, so project pages don't inherit the home page's canonical.
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 // Each <Suspense> boundary lets React make that section interactive as its own small
 // task, so the hero becomes responsive sooner. Nothing here actually suspends; the
@@ -19,6 +27,7 @@ export default function Home() {
 
   return (
     <>
+      <JsonLd data={homeJsonLd()} />
       <Preloader />
       <Nav />
       <main id="main" tabIndex={-1}>

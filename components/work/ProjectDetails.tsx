@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion, type Variants } from "motion/react";
 import type { Project } from "@/data/portfolio";
-import { cn, EASE_OUT, hostOf, pad2 } from "@/lib/utils";
+import { cn, EASE_OUT, hostOf, pad2, projectPath } from "@/lib/utils";
 import { GitHubIcon } from "../Icons";
 import { btn } from "../ui/buttons";
 import { RevealText } from "../ui/RevealText";
@@ -100,6 +100,10 @@ export function ProjectDetails({
               <RollingText>Source</RollingText>
             </a>
           )}
+          <a href={projectPath(project)} className={btn.ghost}>
+            <RollingText>View project</RollingText>
+            <ArrowRight className="size-4 transition-transform duration-500 ease-expo group-hover:translate-x-0.5" />
+          </a>
         </Item>
       </div>
     </div>

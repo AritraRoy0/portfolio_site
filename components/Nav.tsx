@@ -108,7 +108,7 @@ export function Nav() {
       >
         <div className="container-page relative flex items-center justify-between gap-4">
           <a
-            href="#top"
+            href="/"
             onClick={go("top")}
             className="group flex items-center gap-3 rounded-full lg:glass lg:py-1 lg:pl-1 lg:pr-5 lg:shadow-float"
           >
@@ -137,7 +137,7 @@ export function Nav() {
               {NAV_LINKS.map((link) => (
                 <li key={link.id}>
                   <a
-                    href={`#${link.id}`}
+                    href={`/#${link.id}`}
                     onClick={go(link.id)}
                     onPointerEnter={() => setHovered(link.id)}
                     onFocus={() => setHovered(link.id)}
@@ -185,7 +185,7 @@ export function Nav() {
             </button>
             <ThemeToggle />
             <span className="hidden lg:block">
-              <a href="#contact" onClick={go("contact")} className={btn.accent}>
+              <a href="/#contact" onClick={go("contact")} className={btn.accent}>
                 <RollingText>Let’s talk</RollingText>
               </a>
             </span>
@@ -253,7 +253,7 @@ function MobileMenu({
             <li key={link.id} className="overflow-hidden border-b border-line">
               <motion.a
                 ref={i === 0 ? firstLink : undefined}
-                href={`#${link.id}`}
+                href={`/#${link.id}`}
                 onClick={go(link.id)}
                 aria-current={active === link.id ? "location" : undefined}
                 initial={{ y: "105%" }}
